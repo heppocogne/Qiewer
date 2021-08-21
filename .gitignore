@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Other
+*.project
+.qmake.stash
+Makefile
+Makefile.*
+debug/
+release/
+Qiewer.bat
+Qiewer_resource.rc
