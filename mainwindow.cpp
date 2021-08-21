@@ -32,7 +32,8 @@ MainWindow::MainWindow(const std::string& configFile)
 	connect(viewertabs, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
 	connect(timer, &QTimer::timeout, this, &MainWindow::checkSharedMemory);
 	
-	timer->start();
+	//check shared memory every 0.25s
+	timer->start(250);
 
 	logger.write("read config file:	"+configFile, LOG_FROM);
 
@@ -120,12 +121,12 @@ void MainWindow::closeTab(int idx)
 	logger.write("remove tab["+std::to_string(idx)+"]:	"+viewertabs->tabText(idx).toStdString(), LOG_FROM);
 
 	viewertabs->removeTab(idx);
-	idx--;
-	if(idx<0) {
+	//idx--;
+	if(viewertabs->count()<=0) {
 		//close window
 		close();
 	} else {
-		viewertabs->setCurrentIndex(idx);
+		//viewertabs->setCurrentIndex(idx);
 
 		logger.write("current tab["+std::to_string(idx)+"]:	"+viewertabs->tabText(idx).toStdString(), LOG_FROM);
 	}
