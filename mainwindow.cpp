@@ -22,6 +22,7 @@ MainWindow::MainWindow(const std::string& configFile)
 {
 	viewertabs->setTabsClosable(true);
 	viewertabs->setMovable(true);
+	viewertabs->setTabPosition(QTabWidget::South);
 	setCentralWidget(viewertabs);
 	
 	sharedMemory->create(sharedMemorySize);
