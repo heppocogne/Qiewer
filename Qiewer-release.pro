@@ -1,5 +1,6 @@
 QT += core gui widgets
 TARGET = Qiewer
+VERSION = 0.2.0
 TEMPLATE = app
 
 INCLUDEPATH += $$PWD $$PWD/include
