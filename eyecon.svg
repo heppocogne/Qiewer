@@ -8,7 +8,7 @@
    version="1.1"
    id="svg5"
    inkscape:version="1.1 (c68e22c387, 2021-05-23)"
-   sodipodi:docname="eye.svg"
+   sodipodi:docname="eyecon_new.svg"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -25,8 +25,8 @@
      inkscape:document-units="mm"
      showgrid="true"
      inkscape:zoom="1.7637989"
-     inkscape:cx="155.62998"
-     inkscape:cy="107.15507"
+     inkscape:cx="90.996768"
+     inkscape:cy="118.49423"
      inkscape:window-width="1920"
      inkscape:window-height="986"
      inkscape:window-x="-11"
@@ -60,7 +60,7 @@
        x2="6.3499999"
        y2="6.3499999"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="scale(8)" />
+       gradientTransform="matrix(11.636364,0,0,11.636364,-15.393944,-15.393944)" />
     <filter
        inkscape:label="Crumpled Plastic"
        style="color-interpolation-filters:sRGB;"
@@ -595,53 +595,334 @@
          in2="result4"
          id="feBlend4876" />
     </filter>
+    <filter
+       inkscape:label="Lizard Skin"
+       inkscape:menu="Materials"
+       inkscape:menu-tooltip="Stylized reptile skin texture"
+       style="color-interpolation-filters:sRGB;"
+       id="filter1487"
+       x="-0.12401575"
+       y="-0.12401575"
+       width="1.2775591"
+       height="1.2775591">
+      <feGaussianBlur
+         stdDeviation="0.5"
+         in="SourceGraphic"
+         result="result0"
+         id="feGaussianBlur1461" />
+      <feTurbulence
+         result="result1"
+         numOctaves="1"
+         seed="488"
+         baseFrequency="0.095"
+         type="turbulence"
+         id="feTurbulence1463" />
+      <feComposite
+         in="result0"
+         in2="result1"
+         operator="in"
+         result="result2"
+         id="feComposite1465" />
+      <feComposite
+         operator="arithmetic"
+         in="result4"
+         in2="result2"
+         k3="1"
+         k1="3"
+         result="result91"
+         id="feComposite1467" />
+      <feBlend
+         mode="multiply"
+         result="fbSourceGraphic"
+         in2="result91"
+         id="feBlend1469" />
+      <feColorMatrix
+         result="fbSourceGraphicAlpha"
+         in="fbSourceGraphic"
+         values="0 0 0 0 0 0 0 1 0 0 0 0 1 0 0 0 0 0 5 0"
+         id="feColorMatrix1471" />
+      <feGaussianBlur
+         result="result0"
+         in="fbSourceGraphicAlpha"
+         stdDeviation="3"
+         id="feGaussianBlur1473" />
+      <feOffset
+         result="result3"
+         in="result0"
+         dy="2"
+         dx="2"
+         id="feOffset1475" />
+      <feSpecularLighting
+         specularExponent="30"
+         specularConstant="1.1"
+         surfaceScale="2"
+         lighting-color="rgb(111,236,253)"
+         result="result1"
+         in="result0"
+         id="feSpecularLighting1479">
+        <fePointLight
+           z="20000"
+           y="-10000"
+           x="-5000"
+           id="fePointLight1477" />
+      </feSpecularLighting>
+      <feComposite
+         k2="-1"
+         operator="in"
+         result="result2"
+         in="result1"
+         in2="fbSourceGraphicAlpha"
+         id="feComposite1481" />
+      <feComposite
+         k3="1"
+         k2="3"
+         operator="arithmetic"
+         result="result4"
+         in="fbSourceGraphic"
+         in2="result2"
+         id="feComposite1483" />
+      <feBlend
+         mode="multiply"
+         in2="result4"
+         id="feBlend1485" />
+    </filter>
+    <filter
+       inkscape:label="Growing Cells"
+       inkscape:menu="Overlays"
+       inkscape:menu-tooltip="Random rounded living cells like fill"
+       style="color-interpolation-filters:sRGB;"
+       id="filter952"
+       x="-0.070866145"
+       y="-0.070866145"
+       width="1.1417323"
+       height="1.1417323">
+      <feTurbulence
+         type="fractalNoise"
+         baseFrequency="0.1"
+         numOctaves="3"
+         result="result7"
+         id="feTurbulence934" />
+      <feColorMatrix
+         values="0"
+         result="result8"
+         type="saturate"
+         id="feColorMatrix936" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 20 -12 "
+         result="result6"
+         type="matrix"
+         id="feColorMatrix938" />
+      <feGaussianBlur
+         stdDeviation="2"
+         result="result5"
+         in="result6"
+         id="feGaussianBlur940" />
+      <feColorMatrix
+         in="result5"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 10 -0.1 "
+         result="result0"
+         type="matrix"
+         id="feColorMatrix942" />
+      <feComposite
+         k1="0.8"
+         k2="1"
+         in2="SourceGraphic"
+         operator="arithmetic"
+         result="result3"
+         in="result0"
+         id="feComposite944" />
+      <feComposite
+         operator="atop"
+         in2="result8"
+         id="feComposite946" />
+      <feBlend
+         mode="normal"
+         in2="SourceGraphic"
+         result="result9"
+         id="feBlend948" />
+      <feComposite
+         in="result9"
+         in2="SourceGraphic"
+         operator="atop"
+         result="result2"
+         id="feComposite950" />
+    </filter>
+    <filter
+       inkscape:label="Alpha Monochrome Cracked"
+       style="color-interpolation-filters:sRGB;"
+       inkscape:menu-tooltip="Basic noise fill texture; adjust color in Flood"
+       inkscape:menu="Overlays"
+       id="filter1384"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feColorMatrix
+         result="fbSourceGraphic"
+         type="luminanceToAlpha"
+         id="feColorMatrix1364" />
+      <feColorMatrix
+         result="result6"
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 1 0 "
+         id="feColorMatrix1366" />
+      <feFlood
+         flood-opacity="1"
+         result="result1"
+         flood-color="rgb(9,96,77)"
+         id="feFlood1368" />
+      <feComposite
+         in2="result6"
+         result="result2"
+         operator="out"
+         id="feComposite1370" />
+      <feTurbulence
+         type="fractalNoise"
+         baseFrequency="0.04"
+         numOctaves="5"
+         id="feTurbulence1372" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -1.5 0 0 4.5 -1 "
+         result="result0"
+         id="feColorMatrix1374" />
+      <feComposite
+         in2="result0"
+         in="result0"
+         result="result4"
+         operator="out"
+         id="feComposite1376" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -1 "
+         result="result7"
+         id="feColorMatrix1378" />
+      <feComposite
+         in2="result2"
+         operator="arithmetic"
+         result="result5"
+         k1="1.5"
+         k3="1"
+         id="feComposite1380" />
+      <feComposite
+         in2="SourceGraphic"
+         operator="in"
+         in="result5"
+         id="feComposite1382" />
+    </filter>
+    <filter
+       inkscape:label="Oil Slick"
+       inkscape:menu="Overlays"
+       inkscape:menu-tooltip="Rainbow-colored semitransparent oily splotches"
+       style="color-interpolation-filters:sRGB;"
+       id="filter2400"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feTurbulence
+         baseFrequency="0.143"
+         numOctaves="5"
+         type="fractalNoise"
+         id="feTurbulence2388" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -3"
+         id="feColorMatrix2390" />
+      <feMorphology
+         result="result3"
+         radius="2.7"
+         operator="dilate"
+         id="feMorphology2392" />
+      <feTurbulence
+         baseFrequency="0.121"
+         numOctaves="2"
+         result="result91"
+         id="feTurbulence2394" />
+      <feDisplacementMap
+         result="result4"
+         scale="18.5"
+         yChannelSelector="A"
+         xChannelSelector="R"
+         in="result3"
+         in2="result91"
+         id="feDisplacementMap2396" />
+      <feComposite
+         in2="SourceGraphic"
+         operator="atop"
+         in="result4"
+         id="feComposite2398" />
+    </filter>
+    <filter
+       inkscape:label="Oil Slick"
+       inkscape:menu="Overlays"
+       inkscape:menu-tooltip="Rainbow-colored semitransparent oily splotches"
+       style="color-interpolation-filters:sRGB;"
+       id="filter2432"
+       x="0"
+       y="0"
+       width="1"
+       height="1">
+      <feTurbulence
+         baseFrequency="0.143"
+         numOctaves="5"
+         type="fractalNoise"
+         id="feTurbulence2420" />
+      <feColorMatrix
+         values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 0 0 0 5 -3"
+         id="feColorMatrix2422" />
+      <feMorphology
+         result="result3"
+         radius="2.7"
+         operator="dilate"
+         id="feMorphology2424" />
+      <feTurbulence
+         baseFrequency="0.121"
+         numOctaves="2"
+         result="result91"
+         id="feTurbulence2426" />
+      <feDisplacementMap
+         result="result4"
+         scale="18.5"
+         yChannelSelector="A"
+         xChannelSelector="R"
+         in="result3"
+         in2="result91"
+         id="feDisplacementMap2428" />
+      <feComposite
+         in2="SourceGraphic"
+         operator="atop"
+         in="result4"
+         id="feComposite2430" />
+    </filter>
   </defs>
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1">
     <circle
-       style="opacity:0.998;fill:#217821;fill-opacity:1;stroke-width:4.51555"
-       id="path5024"
+       style="opacity:0.998;fill:#e5ffd5;fill-opacity:1;stroke-width:6.6101;filter:url(#filter2400)"
+       id="path3564"
        cx="33.866665"
        cy="33.866665"
-       r="33.866665"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
-    <circle
-       style="opacity:0.998;fill:#f2f2f2;stroke-width:2.0841;filter:url(#filter4878)"
-       id="path75"
-       cx="33.866665"
-       cy="33.866665"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005"
        r="33.866665" />
     <circle
-       style="opacity:0.998;fill:#e5ffd5;fill-opacity:1;stroke-width:4.54444"
-       id="path3564"
-       cx="33.866669"
-       cy="33.866669"
-       r="23.283333"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
-    <circle
-       style="opacity:0.998;fill:#800000;stroke-width:4.01053"
+       style="opacity:0.998;fill:#800000;stroke-width:5.83349"
        id="path201"
-       cx="33.866665"
-       cy="33.866665"
-       r="19.049999"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
+       cx="33.866661"
+       cy="33.866661"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005"
+       r="27.709091" />
     <circle
-       style="opacity:0.998;fill:url(#linearGradient463);fill-opacity:1;stroke-width:6.77334"
+       style="opacity:0.998;fill:url(#linearGradient463);fill-opacity:1;stroke-width:9.85217"
        id="path345"
-       cx="33.866665"
-       cy="33.866665"
-       r="16.933332"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
+       cx="33.866661"
+       cy="33.866661"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005"
+       r="24.630302" />
     <path
        sodipodi:type="star"
        style="opacity:0.998;fill:#ff5555;fill-opacity:1;stroke-width:2"
@@ -657,39 +938,39 @@
        inkscape:rounded="0"
        inkscape:randomized="0"
        d="m 27.999999,14 4.828043,-2.499716 -5.416257,0.471954 5.222944,-1.50978 L 27.23047,9.8686835 32.6476,9.4068591 27.463022,7.7701757 32.866161,8.3740547 28.100504,5.7573588 33.282013,7.4037346 29.118419,3.9075841 33.879174,6.5331874 30.477647,2.2919376 34.634696,5.7958679 32.125955,0.97250766 35.519545,5.2201108 34,-8.5062066e-7 36.499716,4.8280422 l -0.471954,-5.41625714 1.50978,5.22294404 0.593774,-5.40425897 0.461825,5.41713007 1.636683,-5.184578 -0.603879,5.403139 2.616696,-4.76565679 -1.646376,5.18150819 3.496151,-4.1635939 -2.625603,4.760755 4.241249,-3.4015265 -3.50393,4.1570486 4.82336,-2.5087404 -4.247603,3.3935893 5.220112,-1.5195448 -4.828043,2.4997161 5.416257,-0.4719538 -5.222944,1.5097803 5.404259,0.5937735 -5.41713,0.461825 5.184578,1.636683 -5.403139,-0.603879 4.765657,2.616696 -5.181509,-1.646376 4.163594,3.496151 -4.760755,-2.625603 3.401527,4.241249 -4.157049,-3.50393 2.508741,4.82336 -3.39359,-4.247603 L 42,20.000001 l -2.499716,-4.828043 0.471954,5.416257 -1.50978,-5.222944 -0.593774,5.404259 -0.461825,-5.41713 -1.636683,5.184578 0.603879,-5.403139 -2.616696,4.765657 1.646376,-5.181509 -3.496151,4.163594 2.625603,-4.760755 -4.241249,3.401527 3.50393,-4.157049 -4.82336,2.508741 4.247603,-3.39359 z"
-       transform="matrix(1.4740663,0,0,1.4740663,-22.147851,19.126005)"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
+       transform="matrix(2.1440965,0,0,2.1440965,-47.609001,12.425701)"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005" />
     <ellipse
-       style="opacity:0.998;fill:#eeffaa;stroke-width:4.09892"
+       style="opacity:0.998;fill:#eeffaa;stroke-width:5.96209;filter:url(#filter2432)"
        id="path999"
-       cx="33.866665"
-       cy="33.866665"
-       rx="5.2916665"
-       ry="15.875"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
+       cx="33.866661"
+       cy="33.866661"
+       rx="7.6969695"
+       ry="23.09091"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005" />
     <ellipse
-       style="opacity:0.998;fill:#2b1100;stroke-width:3.54186"
+       style="opacity:0.998;fill:#2b1100;stroke-width:5.15179"
        id="path999-0"
-       cx="33.866665"
-       cy="33.866665"
-       rx="4.2333331"
-       ry="14.816667"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
+       cx="33.866661"
+       cy="33.866661"
+       rx="6.1575756"
+       ry="21.551516"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005" />
     <ellipse
-       style="opacity:0.998;fill:#f9f9f9;fill-opacity:0.5;stroke-width:11.5216"
+       style="opacity:0.998;fill:#f9f9f9;fill-opacity:0.5;stroke-width:16.7587"
        id="path1399"
-       cx="39.317791"
-       cy="45.002048"
-       rx="5.3680096"
-       ry="4.6367383"
-       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon.png"
-       inkscape:export-xdpi="96.000008"
-       inkscape:export-ydpi="96.000008" />
+       cx="41.79557"
+       cy="50.063583"
+       rx="7.8080144"
+       ry="6.7443466"
+       inkscape:export-filename="C:\Users\usk10\Pictures\eyecon16.png"
+       inkscape:export-xdpi="6.0000005"
+       inkscape:export-ydpi="6.0000005" />
   </g>
 </svg>
