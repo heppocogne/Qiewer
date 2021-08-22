@@ -7,6 +7,8 @@
 #include <QPoint>
 #include <QScreen>
 #include <cstring>
+#include <QMimeData>
+#include <QMessageBox>
 
 
 const char* MainWindow::sharedMemoryKey="Qiewer/image/input";
@@ -22,6 +24,8 @@ MainWindow::MainWindow(const std::string& configFile)
 	 configureIO(configFile),
 	 firstImage(true)
 {
+	setAcceptDrops(true);
+
 	viewertabs->setTabsClosable(true);
 	viewertabs->setMovable(true);
 	viewertabs->setTabPosition(QTabWidget::South);
@@ -141,5 +145,27 @@ void MainWindow::changeEvent(QEvent* event)
 		default:
 			//ignore
 			do {} while(false);
+	}
+}
+
+
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+	if(event->mimeData()->hasUrls()) {
+		event->acceptProposedAction();
+	}
+}
+
+
+void MainWindow::dropEvent(QDropEvent *event)
+{
+	if(event->mimeData()->urls().size()<configureIO.config.dropFilesLimit) {
+		for(const auto& url: event->mimeData()->urls()) {
+			addImage(url.toLocalFile().toStdString());
+		}
+	} else {
+		const std::string msg="Qiewer cannot accept more than "+std::to_string(configureIO.config.dropFilesLimit)+" files!";
+		logger.write(msg, LOG_FROM);
+		QMessageBox::warning(this, "Warning: Too much files", msg.c_str());
 	}
 }

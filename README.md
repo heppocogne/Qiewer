@@ -31,13 +31,15 @@ The simplest image viewer for my use.　　
    - View in original size
    - Setting (open in new window)
       - Window mode (Maximized / Normal)
+	  - Language
+	  - Drag & drop limitation (8 files by  default)
       - Process lifespan (Keep alive / Exit when all images are closed)
       - Default image size (Fit to window / Original size)
       - Maximum & Minimum scale (0.1 to 10.0, by default)
       - Scale change rate (x10^0.1 per 15° wheel rotation, by default)
       - About Qt
       - About Qiewer
-   - Drag & Drop Support (not work in progress)
+   - Drag & Drop Support (work in progress)
    - GIF Animation Support (far from work in progress)
       - Video Support, if possible
 

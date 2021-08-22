@@ -35,7 +35,6 @@ class MainWindow: public QMainWindow
 		virtual ~MainWindow();
 		void addImage(const std::string& imageFileName);
 		void showProperly(void);
-		//void outputConfig(const std::string& configFile);
 
 	public slots:
 		void closeTab(int idx);
@@ -44,6 +43,8 @@ class MainWindow: public QMainWindow
 	protected:
 		virtual void resizeEvent(QResizeEvent *event);
 		virtual void changeEvent(QEvent* event);
+		virtual void dragEnterEvent(QDragEnterEvent *event);
+		virtual void dropEvent(QDropEvent *event);
 };
 
 #endif

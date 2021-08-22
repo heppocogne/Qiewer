@@ -7,21 +7,10 @@
 #include "logger.h"
 #include <string>
 
-std::string extractDirectoryName(const std::string& fileName)
-{
-	int idx=fileName.length()-1;
-	for(; 0<=idx; idx--) {
-		if(fileName[idx]=='\\'||fileName[idx]=='/') {
-			break;
-		}
-	}
-	//idx=-1 or fileName[idx]=\ or /
-	return fileName.substr(0,idx);
-}
 
-
+std::string extractDirectoryName(const std::string& fileName);
 Logger logger;
-const Version version(0, 2, 3, "alpha");
+const Version version(0, 2, 4, "alpha");
 
 
 int main(int argc, char* argv[])
@@ -61,4 +50,17 @@ int main(int argc, char* argv[])
 		
 		return exitCode;
 	}
+}
+
+
+std::string extractDirectoryName(const std::string& fileName)
+{
+	int idx=fileName.length()-1;
+	for(; 0<=idx; idx--) {
+		if(fileName[idx]=='\\'||fileName[idx]=='/') {
+			break;
+		}
+	}
+	//idx=-1 or fileName[idx]=\ or /
+	return fileName.substr(0,idx);
 }

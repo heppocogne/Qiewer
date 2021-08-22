@@ -3,8 +3,15 @@
 //old formats here
 template<>
 struct LaunchConfigure_impl<0> {
-	int width=1600,
-	    height=900;
+	int width=LaunchConfigure_default::width,
+	    height=LaunchConfigure_default::height;
+};
+
+template<>
+struct LaunchConfigure_impl<1> {
+	int width=LaunchConfigure_default::width,
+	    height=LaunchConfigure_default::height;
+	bool maximized=LaunchConfigure_default::maximized;
 };
 
 
@@ -35,8 +42,12 @@ bool ConfigureIO::load(void)
 		switch(format) {
 			case 0:
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<0>));
-				//config.maximized=false;
 				break;
+
+			case 1:
+				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<1>));
+				break;
+
 			case latestFormat:
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(ConfigureIO::LaunchConfigure));
 				break;
@@ -69,4 +80,10 @@ bool ConfigureIO::save(void)
 	} else {
 		return false;
 	}
+}
+
+
+void ConfigureIO::reset(void)
+{
+	config=LaunchConfigure();
 }
