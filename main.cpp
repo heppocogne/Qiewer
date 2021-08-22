@@ -21,7 +21,7 @@ std::string extractDirectoryName(const std::string& fileName)
 
 
 Logger logger;
-const Version version(0, 2, 2, "alpha");
+const Version version(0, 2, 3, "alpha");
 
 
 int main(int argc, char* argv[])

@@ -13,8 +13,8 @@ struct LaunchConfigure_impl {
 //latest version here
 template<>
 struct LaunchConfigure_impl<1> {
-	int width=1200,
-	    height=675;
+	int width=1600,
+	    height=900;
 	bool maximized=false;
 };
 

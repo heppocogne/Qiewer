@@ -3,8 +3,8 @@
 //old formats here
 template<>
 struct LaunchConfigure_impl<0> {
-	int width=1200,
-	    height=675;
+	int width=1600,
+	    height=900;
 };
 
 
