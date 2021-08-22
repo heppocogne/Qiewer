@@ -26,7 +26,7 @@ class MainWindow: public QMainWindow
 		
 		ConfigureIO configureIO;
 		//void saveConfig(void);
-
+		bool firstImage;
 	public:
 		static const char* sharedMemoryKey;
 		static const size_t sharedMemorySize;

@@ -19,7 +19,8 @@ MainWindow::MainWindow(const std::string& configFile)
 	 viewertabs(new QTabWidget(this)),
 	 sharedMemory(new QSharedMemory(sharedMemoryKey, this)),
 	 timer(new QTimer(this)),
-	 configureIO(configFile)
+	 configureIO(configFile),
+	 firstImage(true)
 {
 	viewertabs->setTabsClosable(true);
 	viewertabs->setMovable(true);
@@ -79,17 +80,16 @@ void MainWindow::addImage(const std::string& imageFileName)
 
 void MainWindow::showProperly(void)
 {
-	if(/*configureIO.config.width<0 || configureIO.config.height<0*/configureIO.config.maximized) {
+	if(configureIO.config.maximized) {
 		logger.write("show maximized window", LOG_FROM);
 
 		showMaximized();
 	} else {
-		//resize(config.width, config.height);
 		logger.write("show normal window:	"+std::to_string(configureIO.config.width)+"x"+std::to_string(configureIO.config.height), LOG_FROM);
 
 		const auto& available=QGuiApplication::primaryScreen()->availableSize();
 		setGeometry((available.width()-configureIO.config.width)/2, (available.height()-configureIO.config.height)/2,
-								configureIO.config.width, configureIO.config.height);
+		            configureIO.config.width, configureIO.config.height);
 		show();
 	}
 }
@@ -100,21 +100,16 @@ void MainWindow::closeTab(int idx)
 	logger.write("remove tab["+std::to_string(idx)+"]:	"+viewertabs->tabText(idx).toStdString(), LOG_FROM);
 
 	viewertabs->removeTab(idx);
-	//idx--;
 	if(viewertabs->count()<=0) {
 		//close window
 		close();
 	} else {
-		//viewertabs->setCurrentIndex(idx);
-
 		logger.write("current tab["+std::to_string(idx)+"]:	"+viewertabs->tabText(idx).toStdString(), LOG_FROM);
 	}
 }
 
 void MainWindow::checkSharedMemory(void)
 {
-	//logger.write("checkSharedMemory()", LOG_FROM);
-
 	sharedMemory->lock();
 	char* input=reinterpret_cast<char*>(sharedMemory->data());
 	if(input!=nullptr&&0<strlen(input)) {
@@ -128,12 +123,9 @@ void MainWindow::checkSharedMemory(void)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
 	logger.write("window resized:	"+std::to_string(event->size().width())+"x"+std::to_string(event->size().height()), LOG_FROM);
-	
+
 	configureIO.config.width=event->size().width();
 	configureIO.config.height=event->size().height();
-
-	//QMainWindow::resizeEvent(event);
-	viewertabs->resize(event->size());
 }
 
 
@@ -141,7 +133,6 @@ void MainWindow::changeEvent(QEvent* event)
 {
 	switch(event->type()) {
 		case  QEvent::WindowStateChange:
-			//QWindowStateChangeEvent* const wscevent=static_cast<QWindowStateChangeEvent*>(event);
 			if(windowState()==Qt::WindowMaximized) {
 				configureIO.config.maximized=true;
 			} else if(windowState()==Qt::WindowNoState) {
@@ -149,6 +140,6 @@ void MainWindow::changeEvent(QEvent* event)
 			}
 		default:
 			//ignore
-			do{}while(false);
+			do {} while(false);
 	}
 }
