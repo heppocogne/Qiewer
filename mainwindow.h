@@ -7,9 +7,11 @@
 #include <QWidget>
 #include <QTabWidget>
 #include <QResizeEvent>
+#include <QEvent>
 #include <fstream>
 #include <QSharedMemory>
 #include <QTimer>
+#include "configure.h"
 
 
 class MainWindow: public QMainWindow
@@ -19,12 +21,11 @@ class MainWindow: public QMainWindow
 		QTabWidget* const viewertabs;
 		static std::string extractFileName(const std::string& fileName);
 
-		struct WindowConfigure {
-			int width, height;
-		} config;
-
 		QSharedMemory* const sharedMemory;
 		QTimer* const timer;
+		
+		ConfigureIO configureIO;
+		//void saveConfig(void);
 
 	public:
 		static const char* sharedMemoryKey;
@@ -34,7 +35,7 @@ class MainWindow: public QMainWindow
 		virtual ~MainWindow();
 		void addImage(const std::string& imageFileName);
 		void showProperly(void);
-		void outputConfig(const std::string& configFile);
+		//void outputConfig(const std::string& configFile);
 
 	public slots:
 		void closeTab(int idx);
@@ -42,6 +43,7 @@ class MainWindow: public QMainWindow
 
 	protected:
 		virtual void resizeEvent(QResizeEvent *event);
+		virtual void changeEvent(QEvent* event);
 };
 
 #endif

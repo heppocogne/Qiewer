@@ -29,6 +29,7 @@ class ImageViewer: public QGraphicsView
 		double baseScale;	//image scale to fit to draw area (not affect coordinate system)
 		double virtualLogScale;	//relative scale to draw area (〃)
 
+		void updateBaseScale(void);
 		double virtualScale(void)const;
 		void setVirtualScale(double v_scale);
 		void setVirtualLogScale(double v_scale);

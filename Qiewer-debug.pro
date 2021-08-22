@@ -1,9 +1,5 @@
-QT += core gui widgets
-TARGET = Qiewer
-TEMPLATE = app
+include(Qiewer-main.pri)
 
-INCLUDEPATH += $$PWD $$PWD/include
 CONFIG += debug
+message("debug executable does not need icons!")
 
-HEADERS += version.h mainwindow.h logger.h imageviewer.h
-SOURCES += main.cpp version.cpp mainwindow.cpp logger.cpp imageviewer.cpp

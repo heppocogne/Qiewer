@@ -19,8 +19,10 @@ std::string extractDirectoryName(const std::string& fileName)
 	return fileName.substr(0,idx);
 }
 
+
 Logger logger;
-const Version version(0, 2, 0, "alpha");
+const Version version(0, 2, 1, "alpha");
+
 
 int main(int argc, char* argv[])
 {
@@ -54,7 +56,7 @@ int main(int argc, char* argv[])
 
 		const int exitCode=app.exec();
 
-		window->outputConfig(extractDirectoryName(argv[0])+"\\.qiewerconfig");
+		//window->saveConfig();
 		delete window;
 		
 		return exitCode;

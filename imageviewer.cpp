@@ -126,9 +126,24 @@ void ImageViewer::updatePixmapRect(double x,double y)
 	updatePixmapRect();
 }
 
+void ImageViewer::updateBaseScale(void){
+	const double xscale=(double)width()/rawPixmap.width();
+	const double yscale=(double)height()/rawPixmap.height();
+
+	baseScale=1.0;
+	if(baseScale>xscale) {
+		baseScale=xscale;
+	}
+	if(baseScale>yscale) {
+		baseScale=yscale;
+	}
+}
+
 
 void ImageViewer::paintEvent(QPaintEvent *event)
 {
+	if(event==nullptr) {/*warning avoidance*/}
+	
 	QPainter painter(viewport());
 	painter.setRenderHint(QPainter::SmoothPixmapTransform,true);
 
@@ -138,19 +153,10 @@ void ImageViewer::paintEvent(QPaintEvent *event)
 
 void ImageViewer::resizeEvent(QResizeEvent *event)
 {
-	//const auto& available=QGuiApplication::primaryScreen()->availableSize();
-	const double xscale=(double)event->size().width()/rawPixmap.width();
-	const double yscale=(double)event->size().height()/rawPixmap.height();
-	baseScale=1.0;
-	if(baseScale>xscale) {
-		baseScale=xscale;
-	}
-	if(baseScale>yscale) {
-		baseScale=yscale;
-	}
-	virtualLogScale=0.0;
-
-	positionMapping(QPointF(rawPixmap.width(), rawPixmap.height())/2, QPointF(event->size().width(), event->size().height())/2);
+	const auto lookat=mapToItem(event->oldSize().width()/2, event->oldSize().height()/2);
+	updateBaseScale();
+	positionMapping(lookat, QPointF(event->size().width(), event->size().height())/2);
+	adjustPosition();
 }
 
 
