@@ -5,7 +5,7 @@ The simplest image viewer for my use.　　
 # Features
 - Single process application.
    - All images will be displayed in their own tab.
-   - <span style="color: gray; ">(and not support multiple windows)</span>
+   - <span style="color: gray;">(and not support multiple windows)</span>
 - Small binary size (smaller than image file, excluding QuickTime runtime).
 - Faster than Windows10 PhotoViewer.
 - Supported formats (supported by Qt)
@@ -23,8 +23,8 @@ The simplest image viewer for my use.　　
 
 # Update plan (no more than a plan)
 - Version compatibility
-   - Add version tag to .qiewerconfig
-- Add tool bar and following icons
+   - ~~Add version tag to .qiewerconfig~~ Done
+- Add tool bar and following icons (not work in progress)
    - File (load image from files electer)
    - Reload
    - Fit to window
@@ -37,7 +37,7 @@ The simplest image viewer for my use.　　
       - Scale change rate (x10^0.1 per 15° wheel rotation, by default)
       - About Qt
       - About Qiewer
-   - Drag & Drop Support
-   - GIF Animation Support
+   - Drag & Drop Support (not work in progress)
+   - GIF Animation Support (far from work in progress)
       - Video Support, if possible
 
