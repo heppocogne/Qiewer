@@ -2,14 +2,15 @@
 #define VERSION_H_INCLUDED
 
 #include <string>
+#include <QString>
 
 struct Version {
 	const int major, minor, patch;
-	const std::string identifier;
+	const QString identifier;
 
-	Version(const int _major, const int _minor, const int _patch, const std::string& _identifier = "");
+	Version(const int _major, const int _minor, const int _patch, const QString& _identifier = "");
 
-	operator std::string() const;
+	operator QString()const;
 };
 
 extern const Version version;

@@ -14,22 +14,31 @@ struct LaunchConfigure_impl<1> {
 	bool maximized=LaunchConfigure_default::maximized;
 };
 
+template<>
+struct LaunchConfigure_impl<2> {
+	int width=LaunchConfigure_default::width,
+	    height=LaunchConfigure_default::height;
+	bool maximized=LaunchConfigure_default::maximized;
+	int dropFilesLimit=LaunchConfigure_default::dropFilesLimit;
+};
 
-ConfigureIO::ConfigureIO(const std::string& _configureFileName)
-	:configureFileName(_configureFileName)
-{
 
-}
+ConfigureIO::ConfigureIO()	:configureFileName("") {}
 
+//ConfigureIO::ConfigureIO(const std::string& _configureFileName)	:configureFileName(_configureFileName) {}
+ConfigureIO::ConfigureIO(const QString& _configureFileName)	:configureFileName(_configureFileName) {}
+
+/*
 ConfigureIO::~ConfigureIO()
 {
 	save();
 }
-
+*/
 
 bool ConfigureIO::load(void)
 {
-	std::fstream configStream(configureFileName, std::ios_base::binary|std::ios_base::in);
+	//std::fstream configStream(configureFileName, std::ios_base::binary|std::ios_base::in);
+	std::fstream configStream(configureFileName.toStdString(), std::ios_base::binary|std::ios_base::in);
 
 	bool successful=true;
 
@@ -48,6 +57,10 @@ bool ConfigureIO::load(void)
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<1>));
 				break;
 
+			case 2:
+				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<2>));
+				break;
+
 			case latestFormat:
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(ConfigureIO::LaunchConfigure));
 				break;
@@ -64,9 +77,21 @@ bool ConfigureIO::load(void)
 }
 
 
-bool ConfigureIO::save(void)
+bool ConfigureIO::load(const QString& _configureFileName)
 {
-	std::fstream configStream(configureFileName, std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
+	if(configureFileName=="") {
+		configureFileName=_configureFileName;
+		return load();
+	} else {
+		return false;
+	}
+}
+
+
+bool ConfigureIO::save(void)const
+{
+	//std::fstream configStream(configureFileName, std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
+	std::fstream configStream(configureFileName.toStdString(), std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
 
 	if(configStream) {
 		logger.write("save config file:	"+configureFileName, LOG_FROM);

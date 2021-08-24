@@ -1,5 +1,6 @@
 include(Qiewer-main.pri)
 
+RCC_DIR = $$PWD/debug
 CONFIG += debug
-message("debug executable does not need icons!")
+#message("debug executable does not need icons!")
 

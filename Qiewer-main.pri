@@ -1,10 +1,10 @@
 QT += core gui widgets
 TARGET = Qiewer
-VERSION = 0.2.4
+VERSION = 0.3.0
 TEMPLATE = app
 
-INCLUDEPATH += $$PWD $$PWD/include
+INCLUDEPATH += $$PWD/include
 
-HEADERS += version.h mainwindow.h logger.h imageviewer.h configure.h
-SOURCES += main.cpp version.cpp mainwindow.cpp logger.cpp imageviewer.cpp configure.cpp
-
+HEADERS +=					include/version.h	include/mainwindow.h	include/logger.h	include/imageviewer.h	include/configure.h	include/fileselector.h	include/nameutil.h
+SOURCES +=	src/main.cpp	src/version.cpp		src/mainwindow.cpp		src/logger.cpp		src/imageviewer.cpp		src/configure.cpp	src/fileselector.cpp	src/nameutil.cpp
+RESOURCES = rc/qiewer_resources.qrc

@@ -53,24 +53,24 @@ QSize ImageViewer::sizeHint(void)const
 
 double ImageViewer::virtualScale(void)const
 {
-	return std::pow(10,virtualLogScale);
+	return std::pow(10, virtualLogScale);
 }
 
 void ImageViewer::setVirtualScale(double v_scale)
 {
-	if(virtualScaleMax<v_scale) {
+	if(1.0<baseScale*v_scale && virtualScaleMax<v_scale) {
 		v_scale=virtualScaleMax;
 	} else if(v_scale<virtualScaleMin) {
 		v_scale=virtualScaleMin;
 	}
-	virtualLogScale=log10(v_scale);
+	virtualLogScale=std::log10(v_scale);
 }
 
 void ImageViewer::setVirtualLogScale(double vlog_scale)
 {
 	const double vlog_max=std::log10(virtualScaleMax);
 	const double vlog_min=std::log10(virtualScaleMin);
-	if(vlog_max<vlog_scale) {
+	if(1.0<baseScale*std::pow(10, vlog_scale) && vlog_max<vlog_scale) {
 		vlog_scale=vlog_max;
 	} else if(vlog_scale<vlog_min) {
 		vlog_scale=vlog_min;

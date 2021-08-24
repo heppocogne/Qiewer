@@ -4,6 +4,7 @@
 #include <string>
 #include <fstream>
 #include <memory>
+#include <QString>
 #define LOG_FROM __FILE__, __LINE__
 
 class Logger
@@ -13,11 +14,13 @@ class Logger
 	public:
 		Logger()=default;
 		Logger(const Logger& other)=default;
-		Logger(const std::string& logFileName);
+
+		Logger(const QString& logFileName);
 		~Logger()=default;
-		bool openFile(const std::string& logFileName);
-		void write(const std::string& msg,const std::string& from="");
-		void write(const std::string& msg,const std::string& from_file,int from_line);
+
+		bool openFile(const QString& logFileName);
+		void write(const QString& msg, const QString& from="");
+		void write(const QString& msg, const QString& from_file, int from_line);
 };
 
 extern Logger logger;
