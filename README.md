@@ -11,7 +11,6 @@ The simplest image viewer for my use.　　
 - Supported formats (supported by Qt)
    - .png
    - .jpg
-   - .svg
    - .bmp
    - .gif (GIF Animation is not supported)
    - .svg
@@ -25,7 +24,7 @@ The simplest image viewer for my use.　　
 - Version compatibility
    - ~~Add version tag to .qiewerconfig~~ Done
 - Add tool bar and following icons (not work in progress)
-   - File (load image from files electer)
+   - ~~Open File (load image from files electer)~~ Done
    - Reload
    - Fit to window
    - View in original size
