@@ -18,7 +18,7 @@
 QString extractDirectoryName(const QString& fileName);
 Logger logger;
 ConfigureIO configureIO;
-const Version version(0, 3, 0, "alpha");
+const Version version(0, 3, 1, "alpha");
 
 
 int main(int argc, char* argv[])

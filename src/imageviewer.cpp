@@ -126,7 +126,8 @@ void ImageViewer::updatePixmapRect(double x,double y)
 	updatePixmapRect();
 }
 
-void ImageViewer::updateBaseScale(void){
+void ImageViewer::updateBaseScale(void)
+{
 	const double xscale=(double)width()/rawPixmap.width();
 	const double yscale=(double)height()/rawPixmap.height();
 
@@ -143,7 +144,7 @@ void ImageViewer::updateBaseScale(void){
 void ImageViewer::paintEvent(QPaintEvent *event)
 {
 	if(event==nullptr) {/*warning avoidance*/}
-	
+
 	QPainter painter(viewport());
 	painter.setRenderHint(QPainter::SmoothPixmapTransform,true);
 
@@ -192,8 +193,18 @@ void	ImageViewer::wheelEvent(QWheelEvent *event)
 	log_a(virtualScale) =∫steps dt となるようにしたい。
 	d(log_a(virtualScale))/dt = steps
 	*/
-	const double prevLogScale=virtualLogScale;
 	const double steps=event->angleDelta().y()/120.0;
+	
+	auto onScreen=mousePos;
+	const auto onPixmap=mapToItem(mousePos);
+	if(onPixmap.x()<0||rawPixmap.width()<onPixmap.x()) {
+		onScreen.setX(width()/2);
+	}
+	if(onPixmap.y()<0||rawPixmap.height()<onPixmap.y()) {
+		onScreen.setY(height()/2);
+	}
+	zoomMain(steps, onScreen);
+	/*
 
 	auto onPixmap=mapToItem(mousePos);
 	auto onScreen=mousePos;
@@ -205,6 +216,8 @@ void	ImageViewer::wheelEvent(QWheelEvent *event)
 		onScreen.setY(height()/2);
 		onPixmap.setY(rawPixmap.height()/2);
 	}
+
+	const double prevLogScale=virtualLogScale;
 
 	setVirtualLogScale(virtualLogScale+steps*0.1);
 
@@ -218,6 +231,7 @@ void	ImageViewer::wheelEvent(QWheelEvent *event)
 
 		viewport()->repaint();
 	}
+	*/
 }
 
 
@@ -246,4 +260,60 @@ void ImageViewer::adjustPosition(void)
 	}
 
 	updatePixmapRect();
+}
+
+
+void ImageViewer::fitToWindow(void)
+{
+	if(virtualLogScale!=0.0) {
+		const auto onPixmap=QPoint(rawPixmap.width()/2, rawPixmap.height()/2);
+		const auto onScreen=QPoint(width()/2, height()/2);
+		setVirtualLogScale(0.0);
+		updatePixmapRect();
+
+		positionMapping(onPixmap, onScreen);
+		adjustPosition();
+
+		viewport()->repaint();
+	}
+}
+
+void ImageViewer::displayOriginal(void)
+{
+	if(actualScale()!=1.0) {
+		const auto onScreen=QPoint(width()/2, height()/2);
+		const auto onPixmap=mapToItem(onScreen);
+		setVirtualScale(1.0/virtualScale());
+		updatePixmapRect();
+
+		positionMapping(onPixmap, onScreen);
+		adjustPosition();
+
+		viewport()->repaint();
+	}
+}
+
+void ImageViewer::zoom(int value)
+{
+	zoomMain(value, QPoint(width()/2, height()/2));
+}
+
+
+void ImageViewer::zoomMain(int steps, const QPoint& onScreen)
+{
+	const double prevLogScale=virtualLogScale;
+	const auto onPixmap=mapToItem(onScreen);
+	
+	setVirtualLogScale(virtualLogScale+steps*0.1);
+
+	//scale changed
+	if(prevLogScale!=virtualLogScale) {
+
+		updatePixmapRect();
+
+		positionMapping(onPixmap, onScreen);
+		adjustPosition();
+
+		viewport()->repaint();
+	}
 }

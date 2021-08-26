@@ -1,7 +1,9 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
 	<qresource prefix="/rc">
-		<!--<file>fopen16.png</file>-->
 		<file>fopen24.png</file>
+		<file>100%24.png</file>
+		<file>zoomin24.png</file>
+		<file>zoomout24.png</file>
 	</qresource>
 </RCC>

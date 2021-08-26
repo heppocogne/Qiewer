@@ -39,11 +39,11 @@ MainWindow::MainWindow()
 	//toolbar->setVisible(true);
 	toolbar->setVisible(false);
 	toolbar->setStyleSheet("background-color: rgb(240, 240, 240)");
-	
+
 	//setup fileselector
 	toolbar->addAction(QIcon(":/rc/fopen24.png"), "Open File", fileSelector, &FileSelector::open);
 	connect(fileSelector, &FileSelector::fileSelected, this, &MainWindow::addImage);
-	
+
 
 	//setup shared memory
 	sharedMemory->create(sharedMemorySize);
@@ -86,9 +86,10 @@ bool MainWindow::addImage(const QString& imageFileName)
 
 		const auto& image=imageReader->read();
 		viewer->setImage(image);
+		//viewer->filename=imageFileName;
 		const int idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
 		viewertabs->setCurrentIndex(idx);
-		
+
 		return true;
 	} else {
 		const QString msg="Qiewer does not support this file format";
@@ -99,6 +100,16 @@ bool MainWindow::addImage(const QString& imageFileName)
 	}
 }
 
+/*
+void MainWindow::reload(void)
+{
+	ImageViewer* const viewer=static_cast<ImageViewer*>(viewertabs->currentWidget());
+	imageReader->setFileName(viewer->filename);
+	if(imageReader->canRead()) {
+		viewer->setImage(imageReader->read());
+	}
+}
+*/
 
 void MainWindow::showProperly(void)
 {
@@ -145,16 +156,8 @@ void MainWindow::checkSharedMemory(void)
 void MainWindow::checkMousePosition(void)
 {
 	const auto pos_global=QCursor::pos();
-	/*
-	const auto pos_window=this->mapFromGlobal(pos_global);
-	const auto pos_toolbar=toolbar->mapFromGlobal(pos_global);
-	*/
-	//this->geometry() is on the global coordinates
-	//toolbar->geometry() is on the window coordinates
-	
 	const auto pos_window=this->mapFromGlobal(pos_global);
 	if(geometry().contains(pos_global) && pos_window.y()<toolbar->geometry().bottom()*2) {
-		//logger.write("pos_global=["+QString::number(pos_global.x())+", "+QString::number(pos_global.y())+"]", LOG_FROM);
 		toolbar->setVisible(true);
 	} else {
 		toolbar->setVisible(false);
@@ -165,8 +168,7 @@ void MainWindow::checkMousePosition(void)
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
 	logger.write("window resized:	"+QString::number(event->size().width())+"x"+QString::number(event->size().height()), LOG_FROM);
-	
-	//toolbar->geometry().moveRight(event->size().width());
+
 	auto toolbarGeometry=toolbar->geometry();
 	toolbarGeometry.setLeft(0);
 	toolbarGeometry.setRight(event->size().width());

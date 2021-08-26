@@ -15,7 +15,6 @@ class ImageViewer: public QGraphicsView
 {
 		Q_OBJECT
 		QPixmap rawPixmap;
-		//QPixmap scaledPixmap;
 		QRect pixmapRect;	//used to draw pixmap
 		void updatePixmapRect(void);	//update pixmapRect according to scale
 		void updatePixmapRect(const QPointF& pos);	//set position and update
@@ -46,12 +45,23 @@ class ImageViewer: public QGraphicsView
 		//move the pixmap so that match 'pixmapPos' to 'screenPos'
 		void positionMapping(const QPointF& pixmapPos, const QPointF& screenPos);
 		void adjustPosition(void);
+		void zoomMain(int steps, const QPoint& onScreen);
 
 	public:
 		ImageViewer(QWidget* parent);
 		//~ImageViewer();
-		void setImage(const QImage& image);
 		virtual QSize sizeHint(void)const;
+		//QString filename;
+	
+	public slots:
+		void setImage(const QImage& image);
+		void fitToWindow(void);	//fit to screen; virtualScale=1
+		void displayOriginal(void);	//view original size; actualScale=1
+		/*
+		void zoomin(int value);
+		void zoomout(int value);
+		*/
+		void zoom(int value);
 
 	protected:
 		virtual void	mouseMoveEvent(QMouseEvent *event);

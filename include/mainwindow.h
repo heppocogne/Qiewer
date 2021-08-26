@@ -30,10 +30,6 @@ class MainWindow: public QMainWindow
 		QTimer* const sharedMemoryTick;
 		QTimer* const cursorTick;
 	public:
-		/*
-				static const char* sharedMemoryKey;
-				static const size_t sharedMemorySize;
-		*/
 		constexpr static const char* sharedMemoryKey="Qiewer/image/input";
 		constexpr static const size_t sharedMemorySize=1024;
 		MainWindow();
@@ -45,6 +41,7 @@ class MainWindow: public QMainWindow
 		void checkSharedMemory(void);
 		void checkMousePosition(void);
 		bool addImage(const QString& imageFileName);
+		//void reload(void);
 
 	protected:
 		virtual void resizeEvent(QResizeEvent *event);
