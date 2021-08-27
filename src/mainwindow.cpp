@@ -2,6 +2,7 @@
 #include <QPixmap>
 #include <QString>
 #include "imageviewer.h"
+#include "nameutil.h"
 #include "logger.h"
 #include <QGuiApplication>
 #include <QPoint>
@@ -36,13 +37,29 @@ MainWindow::MainWindow()
 
 	//setup toolbar
 	toolbar->setFloatable(false);
-	//toolbar->setVisible(true);
 	toolbar->setVisible(false);
 	toolbar->setStyleSheet("background-color: rgb(240, 240, 240)");
 
-	//setup fileselector
+	//setup fileselector icon
 	toolbar->addAction(QIcon(":/rc/fopen24.png"), "Open File", fileSelector, &FileSelector::open);
 	connect(fileSelector, &FileSelector::fileSelected, this, &MainWindow::addImage);
+
+	//setup reload icon
+
+	//setup zoomin icon
+	toolbar->addSeparator();
+	toolbar->addAction(QIcon(":/rc/zoomin24.png"), "Zoom In", this, &MainWindow::zoomin);
+
+	//setup zooout icon
+	toolbar->addAction(QIcon(":/rc/zoomout24.png"), "Zoom Out", this, &MainWindow::zoomout);
+
+	//setup view actual size icon
+	toolbar->addAction(QIcon(":/rc/100%24.png"), "Actual Size", this, &MainWindow::actualSize);
+
+	//setup fit size icon
+	toolbar->addAction(QIcon(":/rc/fit24.png"), "Fit to Window", this, &MainWindow::fitSize);
+
+	//setup setting icon
 
 
 	//setup shared memory
@@ -74,6 +91,16 @@ MainWindow::~MainWindow()
 }
 
 
+ImageViewer* MainWindow::currentView(void)const
+{
+	if(viewertabs->count()>0) {
+		return static_cast<ImageViewer*>(viewertabs->currentWidget());
+	} else {
+		return nullptr;
+	}
+}
+
+
 bool MainWindow::addImage(const QString& imageFileName)
 {
 	logger.write("add image:	"+imageFileName, LOG_FROM);
@@ -86,7 +113,7 @@ bool MainWindow::addImage(const QString& imageFileName)
 
 		const auto& image=imageReader->read();
 		viewer->setImage(image);
-		//viewer->filename=imageFileName;
+		viewer->filename=imageFileName;
 		const int idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
 		viewertabs->setCurrentIndex(idx);
 
@@ -100,16 +127,52 @@ bool MainWindow::addImage(const QString& imageFileName)
 	}
 }
 
-/*
 void MainWindow::reload(void)
 {
-	ImageViewer* const viewer=static_cast<ImageViewer*>(viewertabs->currentWidget());
-	imageReader->setFileName(viewer->filename);
-	if(imageReader->canRead()) {
-		viewer->setImage(imageReader->read());
+	//ImageViewer* const viewer=static_cast<ImageViewer*>(viewertabs->currentWidget());
+	ImageViewer* const viewer=currentView();
+	if(viewer) {
+		imageReader->setFileName(viewer->filename);
+		if(imageReader->canRead()) {
+			viewer->setImage(imageReader->read());
+		}
 	}
 }
-*/
+
+void MainWindow::fitSize(void)
+{
+	ImageViewer* const viewer=currentView();
+	if(viewer) {
+		viewer->fitSize();
+	}
+}
+
+void MainWindow::actualSize(void)
+{
+	ImageViewer* const viewer=currentView();
+	if(viewer) {
+		viewer->actualSize();
+	}
+}
+
+void  MainWindow::zoomin(void)
+{
+	zoom(1);
+}
+
+void MainWindow::zoomout(void)
+{
+	zoom(-1);
+}
+
+void MainWindow::zoom(int value)
+{
+	ImageViewer* const viewer=currentView();
+	if(viewer) {
+		viewer->zoom(value);
+	}
+}
+
 
 void MainWindow::showProperly(void)
 {
@@ -158,6 +221,13 @@ void MainWindow::checkMousePosition(void)
 	const auto pos_global=QCursor::pos();
 	const auto pos_window=this->mapFromGlobal(pos_global);
 	if(geometry().contains(pos_global) && pos_window.y()<toolbar->geometry().bottom()*2) {
+		if(!toolbar->isVisible()) {
+			auto toolbarGeometry=toolbar->geometry();
+			toolbarGeometry.setLeft(0);
+			toolbarGeometry.setRight(width());
+			toolbar->setGeometry(toolbarGeometry);
+		}
+
 		toolbar->setVisible(true);
 	} else {
 		toolbar->setVisible(false);

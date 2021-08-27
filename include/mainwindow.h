@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H_INCLUDED
 #define MAINWINDOW_H_INCLUDED
 
-#include <string>
 #include <QImageReader>
 #include <QMainWindow>
 #include <QWidget>
@@ -14,8 +13,9 @@
 #include <QTimer>
 #include "configure.h"
 #include <QToolBar>
-#include "nameutil.h"
 #include "fileselector.h"
+
+class ImageViewer;
 
 class MainWindow: public QMainWindow
 {
@@ -29,6 +29,8 @@ class MainWindow: public QMainWindow
 		QSharedMemory* const sharedMemory;
 		QTimer* const sharedMemoryTick;
 		QTimer* const cursorTick;
+		
+		ImageViewer* currentView(void)const;
 	public:
 		constexpr static const char* sharedMemoryKey="Qiewer/image/input";
 		constexpr static const size_t sharedMemorySize=1024;
@@ -41,7 +43,13 @@ class MainWindow: public QMainWindow
 		void checkSharedMemory(void);
 		void checkMousePosition(void);
 		bool addImage(const QString& imageFileName);
-		//void reload(void);
+		void reload(void);
+		void fitSize(void);
+		void actualSize(void);
+		void zoomin(void);
+		void zoomout(void);
+		void zoom(int value);
+		//void setting(void);
 
 	protected:
 		virtual void resizeEvent(QResizeEvent *event);

@@ -5,8 +5,8 @@
 #include "version.h"
 #include "mainwindow.h"
 #include "configure.h"
+#include "nameutil.h"
 #include "logger.h"
-#include <string>
 #include <QString>
 #include <cstring>
 #include <QMessageBox>
@@ -14,8 +14,6 @@
 #include <chrono>
 
 
-//std::string extractDirectoryName(const std::string& fileName);
-QString extractDirectoryName(const QString& fileName);
 Logger logger;
 ConfigureIO configureIO;
 const Version version(0, 3, 1, "alpha");

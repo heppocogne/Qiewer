@@ -34,6 +34,8 @@ class ImageViewer: public QGraphicsView
 		void setVirtualLogScale(double v_scale);
 		double actualScale(void)const;
 		
+		bool viewActualSize;
+		
 		//map to pixmap (pixmap coordinate; left-top origin, same scale as raw pixmap)
 		QPointF mapToItem(int x, int y)const;
 		QPointF mapToItem(const QPoint& point)const;
@@ -51,16 +53,12 @@ class ImageViewer: public QGraphicsView
 		ImageViewer(QWidget* parent);
 		//~ImageViewer();
 		virtual QSize sizeHint(void)const;
-		//QString filename;
+		QString filename;
 	
 	public slots:
 		void setImage(const QImage& image);
-		void fitToWindow(void);	//fit to screen; virtualScale=1
-		void displayOriginal(void);	//view original size; actualScale=1
-		/*
-		void zoomin(int value);
-		void zoomout(int value);
-		*/
+		void fitSize(void);	//fit to screen; virtualScale=1
+		void actualSize(void);	//view original size; actualScale=1
 		void zoom(int value);
 
 	protected:

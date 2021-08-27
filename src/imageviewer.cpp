@@ -18,7 +18,8 @@ ImageViewer::ImageViewer(QWidget *parent=nullptr)
 	:QGraphicsView(parent),
 	 leftClick(false),
 	 baseScale(1.0),
-	 virtualLogScale(0.0)
+	 virtualLogScale(0.0),
+	 viewActualSize(false)
 {
 	setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -156,6 +157,9 @@ void ImageViewer::resizeEvent(QResizeEvent *event)
 {
 	const auto lookat=mapToItem(event->oldSize().width()/2, event->oldSize().height()/2);
 	updateBaseScale();
+	if(viewActualSize){
+		setVirtualScale(1.0/baseScale);
+	}
 	positionMapping(lookat, QPointF(event->size().width(), event->size().height())/2);
 	adjustPosition();
 }
@@ -178,10 +182,13 @@ void	ImageViewer::mouseReleaseEvent(QMouseEvent *event)
 void	ImageViewer::mouseMoveEvent(QMouseEvent *event)
 {
 	if(leftClick) {
+		const QRect prevPixmapRect=pixmapRect;
 		const QPointF delta=(event->pos()-mousePos);
 		updatePixmapRect(pixmapRect.x()+delta.x(), pixmapRect.y()+delta.y());
 		adjustPosition();
-		viewport()->repaint();
+		if(prevPixmapRect!=pixmapRect) {
+			viewport()->repaint();
+		}
 	}
 	mousePos=event->pos();
 }
@@ -194,7 +201,7 @@ void	ImageViewer::wheelEvent(QWheelEvent *event)
 	d(log_a(virtualScale))/dt = steps
 	*/
 	const double steps=event->angleDelta().y()/120.0;
-	
+
 	auto onScreen=mousePos;
 	const auto onPixmap=mapToItem(mousePos);
 	if(onPixmap.x()<0||rawPixmap.width()<onPixmap.x()) {
@@ -263,8 +270,10 @@ void ImageViewer::adjustPosition(void)
 }
 
 
-void ImageViewer::fitToWindow(void)
+void ImageViewer::fitSize(void)
 {
+	viewActualSize=false;
+	
 	if(virtualLogScale!=0.0) {
 		const auto onPixmap=QPoint(rawPixmap.width()/2, rawPixmap.height()/2);
 		const auto onScreen=QPoint(width()/2, height()/2);
@@ -278,12 +287,14 @@ void ImageViewer::fitToWindow(void)
 	}
 }
 
-void ImageViewer::displayOriginal(void)
+void ImageViewer::actualSize(void)
 {
+	viewActualSize=true;
+	
 	if(actualScale()!=1.0) {
 		const auto onScreen=QPoint(width()/2, height()/2);
 		const auto onPixmap=mapToItem(onScreen);
-		setVirtualScale(1.0/virtualScale());
+		setVirtualScale(1.0/baseScale);
 		updatePixmapRect();
 
 		positionMapping(onPixmap, onScreen);
@@ -301,9 +312,11 @@ void ImageViewer::zoom(int value)
 
 void ImageViewer::zoomMain(int steps, const QPoint& onScreen)
 {
+	viewActualSize=false;
+	
 	const double prevLogScale=virtualLogScale;
 	const auto onPixmap=mapToItem(onScreen);
-	
+
 	setVirtualLogScale(virtualLogScale+steps*0.1);
 
 	//scale changed

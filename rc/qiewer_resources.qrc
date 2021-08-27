@@ -3,6 +3,7 @@
 	<qresource prefix="/rc">
 		<file>fopen24.png</file>
 		<file>100%24.png</file>
+		<file>fit24.png</file>
 		<file>zoomin24.png</file>
 		<file>zoomout24.png</file>
 	</qresource>
