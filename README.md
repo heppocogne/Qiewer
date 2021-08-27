@@ -8,7 +8,7 @@ The simplest image viewer for my use.　　
    - <span style="color: gray;">(and not support multiple windows)</span>
 - Small binary size (smaller than image file, excluding QuickTime runtime).
 - Faster than Windows10 PhotoViewer.
-- Supported formats (supported by Qt)
+- Available image formats (supported by Qt)
    - .png
    - .jpg
    - .bmp
@@ -26,8 +26,8 @@ The simplest image viewer for my use.　　
 - Add tool bar and following icons (not work in progress)
    - ~~Open File (load image from files electer)~~ Done
    - Reload
-   - Fit to window
-   - View in original size
+   - ~~Fit to window~~ Done
+   - ~~View in original size~~ Done
    - Setting (open in new dialog)
       - Window mode (Maximized / Normal)
 	  - Language
