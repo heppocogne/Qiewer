@@ -21,13 +21,8 @@ The simplest image viewer for my use.　　
 
 
 # Update plan (no more than a plan)
-- Version compatibility
-   - ~~Add version tag to .qiewerconfig~~ Done
 - Add tool bar and following icons (not work in progress)
-   - ~~Open File (load image from files electer)~~ Done
    - Reload
-   - ~~Fit to window~~ Done
-   - ~~View in original size~~ Done
    - Setting (open in new dialog)
       - Window mode (Maximized / Normal)
 	  - Language
@@ -38,7 +33,6 @@ The simplest image viewer for my use.　　
       - Scale change rate (x10^0.1 per 15° wheel rotation, by default)
       - About Qt
       - About Qiewer
-   - ~~Drag & Drop Support~~ Done
    - GIF Animation Support (far from work in progress)
       - Video Support, if possible
 
