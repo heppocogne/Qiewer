@@ -33,6 +33,6 @@ The simplest image viewer for my use.　　
       - Scale change rate (x10^0.1 per 15° wheel rotation, by default)
       - About Qt
       - About Qiewer
-   - GIF Animation Support (far from work in progress)
-      - Video Support, if possible
+- GIF Animation Support (far from work in progress)
+   - Video Support, if possible
 
