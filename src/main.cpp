@@ -1,22 +1,23 @@
 #include <QApplication>
 #include <QtGlobal>
 #include <QSharedMemory>
+#include <QString>
+#include <QMessageBox>
+#include <QStandardPaths>
 
 #include "version.h"
 #include "mainwindow.h"
 #include "configure.h"
 #include "nameutil.h"
 #include "logger.h"
-#include <QString>
 #include <cstring>
-#include <QMessageBox>
 #include <thread>
 #include <chrono>
 
 
 Logger logger;
 ConfigureIO configureIO;
-const Version version(0, 3, 1, "alpha");
+const Version version(0, 3, 2, "alpha");
 
 
 int main(int argc, char* argv[])
@@ -55,11 +56,19 @@ int main(int argc, char* argv[])
 		app.exit(1);
 		return exitCode;	//unreachable code
 	} else {
-		logger.openFile(extractDirectoryName(argv[0])+"\\qiewer.log");
+		
+		#ifdef QT_DEBUG
+			logger.openFile(extractDirectoryName(argv[1])+"\\qiewer.log");
+			configureIO.load(extractDirectoryName(argv[1])+"\\.qiewerconfig");
+		#else
+			logger.openFile(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"\\qiewer.log");
+			configureIO.load(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"\\.qiewerconfig");
+		#endif
+		
 		logger.write("Qiewer version:	"+(QString)version, LOG_FROM);
 		logger.write("QuickTime version:	"+QString(qVersion()), LOG_FROM);
 
-		configureIO.load(extractDirectoryName(argv[0])+"\\.qiewerconfig");
+		
 
 		MainWindow* const window=new MainWindow();
 		if(window->addImage(argv[1])) {
