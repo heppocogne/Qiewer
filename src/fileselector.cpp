@@ -1,7 +1,9 @@
 #include  "fileselector.h"
+
 #include <QFileDialog>
 #include <QDir>
 #include <QStandardPaths>
+
 #include <cstring>
 #include "nameutil.h"
 

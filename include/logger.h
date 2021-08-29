@@ -1,10 +1,12 @@
 #ifndef LOGGER_H_INCLUDED
 #define LOGGER_H_INCLUDED
 
+#include <QString>
+
 #include <string>
 #include <fstream>
 #include <memory>
-#include <QString>
+
 #define LOG_FROM __FILE__, __LINE__
 
 class Logger

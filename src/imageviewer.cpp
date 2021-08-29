@@ -1,14 +1,14 @@
 #include "imageviewer.h"
-#include "mainwindow.h"
+
 #include <Qt>
 #include <QString>
 #include <QPixmap>
 #include <QScreen>
 #include <QGuiApplication>
-//#include "logger.h"
-#include <cmath>
 #include <QGraphicsScene>
 
+#include "mainwindow.h"
+#include <cmath>
 
 const double ImageViewer::virtualScaleMax=10.0;
 const double ImageViewer::virtualScaleMin=0.1;

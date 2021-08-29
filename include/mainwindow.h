@@ -8,11 +8,11 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QEvent>
-#include <fstream>
 #include <QSharedMemory>
 #include <QTimer>
-#include "configure.h"
 #include <QToolBar>
+
+#include "configure.h"
 #include "fileselector.h"
 
 class ImageViewer;
@@ -29,6 +29,8 @@ class MainWindow: public QMainWindow
 		QSharedMemory* const sharedMemory;
 		QTimer* const sharedMemoryTick;
 		QTimer* const cursorTick;
+		
+		//Qt::WindowStates windowMode;
 		
 		ImageViewer* currentView(void)const;
 	public:

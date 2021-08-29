@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QString>
+
 #include "configure.h"
 
 class FileSelector: public QObject

@@ -1,9 +1,11 @@
 #ifndef CONFIGURE_H_INCLUDED
 #define CONFIGURE_H_INCLUDED
 
-#include "logger.h"
-#include <fstream>
 #include <QString>
+
+#include "logger.h"
+
+#include <fstream>
 
 #define LATEST_CONFIGURE_FORMAT 3
 

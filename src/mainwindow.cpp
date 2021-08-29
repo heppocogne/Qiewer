@@ -1,17 +1,25 @@
 #include "mainwindow.h"
+
+#include <Qt>
 #include <QPixmap>
 #include <QString>
-#include "imageviewer.h"
-#include "nameutil.h"
-#include "logger.h"
 #include <QGuiApplication>
 #include <QPoint>
 #include <QScreen>
-#include <cstring>
 #include <QMimeData>
 #include <QMessageBox>
 #include <QCursor>
 #include <QIcon>
+#include <QWindowStateChangeEvent>
+
+#include "imageviewer.h"
+#include "nameutil.h"
+#include "logger.h"
+#include <chrono>
+#include <cstring>
+#if defined(_WIN32) || defined(_WIN64)
+	#include <windows.h>
+#endif
 
 
 MainWindow::MainWindow()
@@ -75,10 +83,10 @@ MainWindow::MainWindow()
 	connect(cursorTick, &QTimer::timeout, this, &MainWindow::checkMousePosition);
 
 	//check shared memory every 0.25s
-	sharedMemoryTick->start(250);
+	sharedMemoryTick->start(std::chrono::milliseconds(250));
 
-	//check mouse position every 0.1s
-	cursorTick->start(0.1);
+	//check mouse position every 0.025s
+	cursorTick->start(std::chrono::milliseconds(25));
 }
 
 
@@ -116,7 +124,18 @@ bool MainWindow::addImage(const QString& imageFileName)
 		viewer->filename=imageFileName;
 		const int idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
 		viewertabs->setCurrentIndex(idx);
-
+		
+		setWindowState(windowState()&~Qt::WindowMinimized);
+		#if defined(_WIN32) || defined(_WIN64)
+			//bring the window to the top (Windows depenednt code)
+			const HWND hWnd=reinterpret_cast<HWND>(winId());
+			SetWindowPos(hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+			SetWindowPos(hWnd,HWND_NOTOPMOST,0,0,0,0,SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
+		#else
+			//I don't know whether this actually works
+			setWindowState(windowState()|Qt::WindowActive);
+		#endif
+		
 		return true;
 	} else {
 		const QString msg="Qiewer does not support this file format";
@@ -179,6 +198,7 @@ void MainWindow::showProperly(void)
 	if(configureIO.config.maximized) {
 		logger.write("show maximized window", LOG_FROM);
 
+		//windowMode=Qt::WindowMaximized;
 		showMaximized();
 	} else {
 		logger.write("show normal window:	"+QString::number(configureIO.config.width)+"x"+QString::number(configureIO.config.height), LOG_FROM);
@@ -186,6 +206,8 @@ void MainWindow::showProperly(void)
 		const auto& available=QGuiApplication::primaryScreen()->availableSize();
 		setGeometry((available.width()-configureIO.config.width)/2, (available.height()-configureIO.config.height)/2,
 		            configureIO.config.width, configureIO.config.height);
+
+		//windowMode=Qt::WindowNoState;
 		show();
 	}
 }
@@ -253,11 +275,12 @@ void MainWindow::changeEvent(QEvent* event)
 {
 	switch(event->type()) {
 		case  QEvent::WindowStateChange:
-			if(windowState()==Qt::WindowMaximized) {
+			if(windowState()&Qt::WindowMaximized) {
 				configureIO.config.maximized=true;
-			} else if(windowState()==Qt::WindowNoState) {
+			} else {
 				configureIO.config.maximized=false;
 			}
+			break;
 		default:
 			//ignore
 			do {} while(false);

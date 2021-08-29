@@ -1,8 +1,9 @@
 #ifndef VERSION_H_INCLUDED
 #define VERSION_H_INCLUDED
 
-#include <string>
 #include <QString>
+
+#include <string>
 
 struct Version {
 	const int major, minor, patch;
