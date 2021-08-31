@@ -17,7 +17,7 @@ The simplest image viewer for my use.　　
 
 
 # Requirement
-- QuickTime5 runtime libraries
+- Qt5 runtime libraries
 
 
 # Update plan (no more than a plan)
