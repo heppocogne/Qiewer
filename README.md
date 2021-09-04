@@ -6,7 +6,7 @@ The simplest image viewer for my use.　　
 - Single process application.
    - All images will be displayed in their own tab.
    - <span style="color: gray;">(and not support multiple windows)</span>
-- Small binary size (smaller than image file, excluding QuickTime runtime).
+- Small binary size (smaller than image file, excluding Qt runtime).
 - Faster than Windows10 PhotoViewer.
 - Available image formats (supported by Qt)
    - .png
