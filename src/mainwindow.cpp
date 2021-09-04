@@ -197,8 +197,6 @@ void MainWindow::showProperly(void)
 {
 	if(configureIO.config.maximized) {
 		logger.write("show maximized window", LOG_FROM);
-
-		//windowMode=Qt::WindowMaximized;
 		showMaximized();
 	} else {
 		logger.write("show normal window:	"+QString::number(configureIO.config.width)+"x"+QString::number(configureIO.config.height), LOG_FROM);
@@ -206,8 +204,6 @@ void MainWindow::showProperly(void)
 		const auto& available=QGuiApplication::primaryScreen()->availableSize();
 		setGeometry((available.width()-configureIO.config.width)/2, (available.height()-configureIO.config.height)/2,
 		            configureIO.config.width, configureIO.config.height);
-
-		//windowMode=Qt::WindowNoState;
 		show();
 	}
 }
@@ -231,7 +227,8 @@ void MainWindow::checkSharedMemory(void)
 	sharedMemory->lock();
 	char* input=reinterpret_cast<char*>(sharedMemory->data());
 	if(input!=nullptr&&0<strlen(input)) {
-		addImage(input);
+		const QString imageFileName=QString::fromLocal8Bit(input);
+		addImage(imageFileName);
 		strcpy(input, "");
 	}
 	sharedMemory->unlock();

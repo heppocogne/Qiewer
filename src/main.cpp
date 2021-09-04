@@ -4,6 +4,7 @@
 #include <QString>
 #include <QMessageBox>
 #include <QStandardPaths>
+#include <QTextCodec>
 
 #include "version.h"
 #include "mainwindow.h"
@@ -17,7 +18,7 @@
 
 Logger logger;
 ConfigureIO configureIO;
-const Version version(0, 3, 3, "alpha");
+const Version version(0, 3, 4, "alpha");
 
 
 int main(int argc, char* argv[])
@@ -56,14 +57,15 @@ int main(int argc, char* argv[])
 		app.exit(1);
 		return exitCode;	//unreachable code
 	} else {
-		
+		const QString directoryName=
 		#ifdef QT_DEBUG
-			logger.openFile(extractDirectoryName(argv[1])+"\\qiewer.log");
-			configureIO.load(extractDirectoryName(argv[1])+"\\.qiewerconfig");
+			extractDirectoryName(QString::fromLocal8Bit(argv[0]));
 		#else
-			logger.openFile(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"\\qiewer.log");
-			configureIO.load(QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation)+"\\.qiewerconfig");
+			QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
 		#endif
+		
+		logger.openFile(directoryName+"\\qiewer.log");
+		configureIO.load(directoryName+"\\.qiewerconfig");
 		
 		logger.write("Qiewer version:	"+(QString)version, LOG_FROM);
 		logger.write("QuickTime version:	"+QString(qVersion()), LOG_FROM);
@@ -71,7 +73,8 @@ int main(int argc, char* argv[])
 		
 
 		MainWindow* const window=new MainWindow();
-		if(window->addImage(argv[1])) {
+		const QString imageFileName=QString::fromLocal8Bit(argv[1]);
+		if(window->addImage(imageFileName)) {
 			window->showProperly();
 			exitCode=app.exec();
 		} else {

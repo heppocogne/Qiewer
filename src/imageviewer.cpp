@@ -211,34 +211,6 @@ void	ImageViewer::wheelEvent(QWheelEvent *event)
 		onScreen.setY(height()/2);
 	}
 	zoomMain(steps, onScreen);
-	/*
-
-	auto onPixmap=mapToItem(mousePos);
-	auto onScreen=mousePos;
-	if(onPixmap.x()<0||rawPixmap.width()<onPixmap.x()) {
-		onScreen.setX(width()/2);
-		onPixmap.setX(rawPixmap.width()/2);
-	}
-	if(onPixmap.y()<0||rawPixmap.height()<onPixmap.y()) {
-		onScreen.setY(height()/2);
-		onPixmap.setY(rawPixmap.height()/2);
-	}
-
-	const double prevLogScale=virtualLogScale;
-
-	setVirtualLogScale(virtualLogScale+steps*0.1);
-
-	//scale changed
-	if(prevLogScale!=virtualLogScale) {
-
-		updatePixmapRect();
-
-		positionMapping(onPixmap, onScreen);
-		adjustPosition();
-
-		viewport()->repaint();
-	}
-	*/
 }
 
 
