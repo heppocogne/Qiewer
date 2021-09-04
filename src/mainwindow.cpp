@@ -18,7 +18,7 @@
 #include <chrono>
 #include <cstring>
 #if defined(_WIN32) || defined(_WIN64)
-	#include <windows.h>
+#include <windows.h>
 #endif
 
 
@@ -124,18 +124,22 @@ bool MainWindow::addImage(const QString& imageFileName)
 		viewer->filename=imageFileName;
 		const int idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
 		viewertabs->setCurrentIndex(idx);
-		
+
 		setWindowState(windowState()&~Qt::WindowMinimized);
-		#if defined(_WIN32) || defined(_WIN64)
-			//bring the window to the top (Windows depenednt code)
-			const HWND hWnd=reinterpret_cast<HWND>(winId());
-			SetWindowPos(hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-			SetWindowPos(hWnd,HWND_NOTOPMOST,0,0,0,0,SWP_SHOWWINDOW | SWP_NOMOVE | SWP_NOSIZE);
-		#else
-			//I don't know whether this actually works
-			setWindowState(windowState()|Qt::WindowActive);
-		#endif
-		
+		if(configureIO.config.maximized) {
+			setWindowState(windowState()&Qt::WindowMaximized);
+		}
+
+#if defined(_WIN32) || defined(_WIN64)
+		//bring the window to the top (Windows depenednt code)
+		const HWND hWnd=reinterpret_cast<HWND>(winId());
+		SetWindowPos(hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+		SetWindowPos(hWnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+#else
+		//I don't know whether this actually works
+		setWindowState(windowState()|Qt::WindowActive);
+#endif
+
 		return true;
 	} else {
 		const QString msg="Qiewer does not support this file format";

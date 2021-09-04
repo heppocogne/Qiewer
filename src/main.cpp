@@ -42,7 +42,7 @@ int main(int argc, char* argv[])
 
 		const auto timeout=std::chrono::seconds(10);
 		const auto retryInterval=std::chrono::milliseconds(500);
-		
+
 		exitCode=1;
 		for(auto t=std::chrono::milliseconds(0); t<timeout; t+=retryInterval) {
 			if(input.lock()) {
@@ -53,24 +53,24 @@ int main(int argc, char* argv[])
 			}
 			std::this_thread::sleep_for(retryInterval);
 		}
-		
+
 		app.exit(1);
 		return exitCode;	//unreachable code
 	} else {
 		const QString directoryName=
-		#ifdef QT_DEBUG
-			extractDirectoryName(QString::fromLocal8Bit(argv[0]));
-		#else
-			QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
-		#endif
-		
+#ifdef QT_DEBUG
+		    extractDirectoryName(QString::fromLocal8Bit(argv[0]));
+#else
+		    QStandardPaths::writableLocation(QStandardPaths::AppConfigLocation);
+#endif
+
 		logger.openFile(directoryName+"\\qiewer.log");
 		configureIO.load(directoryName+"\\.qiewerconfig");
-		
+
 		logger.write("Qiewer version:	"+(QString)version, LOG_FROM);
 		logger.write("QuickTime version:	"+QString(qVersion()), LOG_FROM);
 
-		
+
 
 		MainWindow* const window=new MainWindow();
 		const QString imageFileName=QString::fromLocal8Bit(argv[1]);
