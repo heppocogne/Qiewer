@@ -6,18 +6,20 @@ The simplest image viewer for my use.　　
 - Single process application.
    - All images will be displayed in their own tab.
    - <span style="color: gray;">(and not support multiple windows)</span>
-- Small binary size (smaller than image file, excluding Qt runtime).
+- Small binary size (smaller than image file).
 - Faster than Windows10 PhotoViewer.
 - Available image formats (supported by Qt)
    - .png
    - .jpg
    - .bmp
-   - .gif (GIF Animation is not supported)
-   - .svg
+   - .gif (GIF Animation is not supported yet)
+   - .svg, .svgz
 
 
 # Requirement
 - Qt5 runtime libraries
+  - download here:
+    https://www.qt.io/download-open-source
 
 
 # Update plan (no more than a plan)
