@@ -18,7 +18,7 @@
 
 Logger logger;
 ConfigureIO configureIO;
-const Version version(0, 3, 4, "alpha");
+const Version version(0, 3, 5, "alpha");
 
 
 int main(int argc, char* argv[])
@@ -71,9 +71,9 @@ int main(int argc, char* argv[])
 		logger.write("QuickTime version:	"+QString(qVersion()), LOG_FROM);
 
 
-
 		MainWindow* const window=new MainWindow();
 		const QString imageFileName=QString::fromLocal8Bit(argv[1]);
+
 		if(window->addImage(imageFileName)) {
 			window->showProperly();
 			exitCode=app.exec();

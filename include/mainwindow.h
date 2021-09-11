@@ -1,7 +1,6 @@
 #ifndef MAINWINDOW_H_INCLUDED
 #define MAINWINDOW_H_INCLUDED
 
-#include <QImageReader>
 #include <QMainWindow>
 #include <QWidget>
 #include <QTabWidget>
@@ -15,12 +14,11 @@
 #include "configure.h"
 #include "fileselector.h"
 
-class ImageViewer;
+class ViewerInterface;
 
 class MainWindow: public QMainWindow
 {
 		Q_OBJECT
-		QImageReader* const imageReader;
 		QTabWidget* const viewertabs;
 		QToolBar* const toolbar;
 		
@@ -30,15 +28,14 @@ class MainWindow: public QMainWindow
 		QTimer* const sharedMemoryTick;
 		QTimer* const cursorTick;
 		
-		//Qt::WindowStates windowMode;
-		
-		ImageViewer* currentView(void)const;
+		ViewerInterface* currentView(void)const;
 	public:
 		constexpr static const char* sharedMemoryKey="Qiewer/image/input";
 		constexpr static const size_t sharedMemorySize=1024;
 		MainWindow();
 		virtual ~MainWindow();
 		void showProperly(void);
+		
 
 	public slots:
 		void closeTab(int idx);

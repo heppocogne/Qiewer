@@ -1,9 +1,9 @@
 #include "mainwindow.h"
 
 #include <Qt>
-#include <QPixmap>
 #include <QString>
 #include <QGuiApplication>
+#include <QImageReader>
 #include <QPoint>
 #include <QScreen>
 #include <QMimeData>
@@ -13,18 +13,18 @@
 #include <QWindowStateChangeEvent>
 
 #include "imageviewer.h"
+#include "svgviewer.h"
 #include "nameutil.h"
 #include "logger.h"
 #include <chrono>
 #include <cstring>
 #if defined(_WIN32) || defined(_WIN64)
-#include <windows.h>
+	#include <windows.h>
 #endif
 
 
 MainWindow::MainWindow()
 	:QMainWindow(nullptr, Qt::Window),
-	 imageReader(new QImageReader()),
 	 viewertabs(new QTabWidget(this)),
 	 toolbar(new QToolBar(this)),
 	 fileSelector(new FileSelector(this)),
@@ -82,8 +82,8 @@ MainWindow::MainWindow()
 	connect(sharedMemoryTick, &QTimer::timeout, this, &MainWindow::checkSharedMemory);
 	connect(cursorTick, &QTimer::timeout, this, &MainWindow::checkMousePosition);
 
-	//check shared memory every 0.25s
-	sharedMemoryTick->start(std::chrono::milliseconds(250));
+	//check shared memory every 0.2s
+	sharedMemoryTick->start(std::chrono::milliseconds(200));
 
 	//check mouse position every 0.025s
 	cursorTick->start(std::chrono::milliseconds(25));
@@ -94,15 +94,13 @@ MainWindow::~MainWindow()
 {
 	sharedMemoryTick->stop();
 	cursorTick->stop();
-
-	delete imageReader;
 }
 
 
-ImageViewer* MainWindow::currentView(void)const
+ViewerInterface* MainWindow::currentView(void)const
 {
 	if(viewertabs->count()>0) {
-		return static_cast<ImageViewer*>(viewertabs->currentWidget());
+		return static_cast<ViewerInterface*>(viewertabs->currentWidget());
 	} else {
 		return nullptr;
 	}
@@ -113,58 +111,64 @@ bool MainWindow::addImage(const QString& imageFileName)
 {
 	logger.write("add image:	"+imageFileName, LOG_FROM);
 
-	imageReader->setFileName(imageFileName);
-
-	if(imageReader->canRead()) {
-		//the given file is readable
-		ImageViewer* const viewer=new ImageViewer(viewertabs);
-
-		const auto& image=imageReader->read();
-		viewer->setImage(image);
-		viewer->filename=imageFileName;
-		const int idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
-		viewertabs->setCurrentIndex(idx);
-
-		setWindowState(windowState()&~Qt::WindowMinimized);
-		if(configureIO.config.maximized) {
-			setWindowState(windowState()&Qt::WindowMaximized);
+	int idx;
+	for(idx=0; idx<viewertabs->count(); idx++) {
+		if(static_cast<ViewerInterface*>(viewertabs->widget(idx))->getFileName()==imageFileName) {
+			break;
 		}
+	}
+
+	if(viewertabs->count()<=idx) {
+		const auto imageFormat=QImageReader::imageFormat(imageFileName);
+		
+		logger.write("format="+QString(imageFormat), LOG_FROM);
+		
+		ViewerInterface* viewer;
+		if(imageFormat=="svg" || imageFormat=="svgz"){
+			viewer=new SvgViewer(viewertabs);
+		}else{
+			viewer=new ImageViewer(viewertabs);
+		}
+		
+		//ViewerInterface* const viewer=new ImageViewer(viewertabs);
+		if(viewer->setImageFile(imageFileName)) {
+			idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
+		} else {
+			return false;
+		}
+	}
+
+	viewertabs->setCurrentIndex(idx);
+
+	setWindowState(windowState()&~Qt::WindowMinimized);
+	if(configureIO.config.maximized) {
+		setWindowState(windowState()&Qt::WindowMaximized);
+	}
 
 #if defined(_WIN32) || defined(_WIN64)
-		//bring the window to the top (Windows depenednt code)
-		const HWND hWnd=reinterpret_cast<HWND>(winId());
-		SetWindowPos(hWnd,HWND_TOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
-		SetWindowPos(hWnd,HWND_NOTOPMOST,0,0,0,0,SWP_NOMOVE | SWP_NOSIZE);
+	//bring the window to the top (Windows depenednt code)
+	const HWND hWnd=reinterpret_cast<HWND>(winId());
+	SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
+	SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE);
 #else
-		//I don't know whether this actually works
-		setWindowState(windowState()|Qt::WindowActive);
+	//I don't know whether this actually works
+	setWindowState(windowState()|Qt::WindowActive);
 #endif
 
-		return true;
-	} else {
-		const QString msg="Qiewer does not support this file format";
-		logger.write(msg, LOG_FROM);
-		QMessageBox::warning(this, "Warning: Unknown file format", msg);
-
-		return false;
-	}
+	return true;
 }
 
 void MainWindow::reload(void)
 {
-	//ImageViewer* const viewer=static_cast<ImageViewer*>(viewertabs->currentWidget());
-	ImageViewer* const viewer=currentView();
+	ViewerInterface* const viewer=currentView();
 	if(viewer) {
-		imageReader->setFileName(viewer->filename);
-		if(imageReader->canRead()) {
-			viewer->setImage(imageReader->read());
-		}
+		viewer->setImageFile(viewer->getFileName());
 	}
 }
 
 void MainWindow::fitSize(void)
 {
-	ImageViewer* const viewer=currentView();
+	ViewerInterface* const viewer=currentView();
 	if(viewer) {
 		viewer->fitSize();
 	}
@@ -172,7 +176,7 @@ void MainWindow::fitSize(void)
 
 void MainWindow::actualSize(void)
 {
-	ImageViewer* const viewer=currentView();
+	ViewerInterface* const viewer=currentView();
 	if(viewer) {
 		viewer->actualSize();
 	}
@@ -190,7 +194,7 @@ void MainWindow::zoomout(void)
 
 void MainWindow::zoom(int value)
 {
-	ImageViewer* const viewer=currentView();
+	ViewerInterface* const viewer=currentView();
 	if(viewer) {
 		viewer->zoom(value);
 	}
@@ -301,7 +305,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 {
 	if(event->mimeData()->urls().size()<configureIO.config.dropFilesLimit) {
 		for(const auto& url: event->mimeData()->urls()) {
-			addImage(url.toLocalFile());
+			addImage(url.toLocalFile().replace('/', '\\'));
 		}
 	} else {
 		const QString msg="Qiewer cannot accept more than "+QString::number(configureIO.config.dropFilesLimit)+" files!";
