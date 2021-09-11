@@ -226,6 +226,7 @@ void MainWindow::closeTab(int idx)
 		//close window
 		close();
 	} else {
+		idx=viewertabs->currentIndex();
 		logger.write("current tab["+QString::number(idx)+"]:	"+viewertabs->tabText(idx), LOG_FROM);
 	}
 }
@@ -234,9 +235,8 @@ void MainWindow::checkSharedMemory(void)
 {
 	sharedMemory->lock();
 	char* input=reinterpret_cast<char*>(sharedMemory->data());
-	if(input!=nullptr&&0<strlen(input)) {
-		const QString imageFileName=QString::fromLocal8Bit(input);
-		addImage(imageFileName);
+	if(input!=nullptr && 0<strlen(input)) {
+		addImage(QString::fromLocal8Bit(input));
 		strcpy(input, "");
 	}
 	sharedMemory->unlock();
@@ -247,7 +247,11 @@ void MainWindow::checkMousePosition(void)
 {
 	const auto pos_global=QCursor::pos();
 	const auto pos_window=this->mapFromGlobal(pos_global);
-	if(geometry().contains(pos_global) && pos_window.y()<toolbar->geometry().bottom()*2) {
+	if(geometry().left()<=pos_global.x() &&
+			pos_global.x()<=geometry().right() &&
+			-toolbar->geometry().height()<=pos_window.y() &&
+			pos_window.y()<=toolbar->geometry().bottom()*2) {
+			
 		if(!toolbar->isVisible()) {
 			auto toolbarGeometry=toolbar->geometry();
 			toolbarGeometry.setLeft(0);
