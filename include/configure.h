@@ -7,7 +7,7 @@
 
 #include <fstream>
 
-#define LATEST_CONFIGURE_FORMAT 3
+#define LATEST_CONFIGURE_FORMAT 4
 
 
 template<int ver>
@@ -22,10 +22,12 @@ struct LaunchConfigure_impl {
 	#define LaunchConfigure_default_directory ""
 	constexpr static const char* directory=LaunchConfigure_default_directory;
 	constexpr static const bool rememberLastDirectory=true;
+	constexpr static const bool allowDuplicatedFiles=false;
+	constexpr static const bool confirmBeforeQuit=true;
 };
 using LaunchConfigure_default=LaunchConfigure_impl<-1>;
 
-//latest version here
+//latest format here
 template<>
 struct LaunchConfigure_impl<LATEST_CONFIGURE_FORMAT> {
 	int width=LaunchConfigure_default::width,
@@ -34,11 +36,12 @@ struct LaunchConfigure_impl<LATEST_CONFIGURE_FORMAT> {
 	int dropFilesLimit=LaunchConfigure_default::dropFilesLimit;
 	char directory[512]=LaunchConfigure_default_directory;	//LaunchConfigure_default::directory is not available
 	bool rememberLastDirectory=LaunchConfigure_default::rememberLastDirectory;
+	bool allowDuplicatedFiles=LaunchConfigure_default::allowDuplicatedFiles;
+	bool confirmBeforeQuit=LaunchConfigure_default::confirmBeforeQuit;
 };
 
 class ConfigureIO
 {
-		//std::string configureFileName;
 		QString configureFileName;
 	public:
 		//latest version

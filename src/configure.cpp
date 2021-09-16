@@ -1,6 +1,6 @@
 #include "configure.h"
 
-//old formats here
+//older formats here
 template<>
 struct LaunchConfigure_impl<0> {
 	int width=LaunchConfigure_default::width,
@@ -22,22 +22,32 @@ struct LaunchConfigure_impl<2> {
 	int dropFilesLimit=LaunchConfigure_default::dropFilesLimit;
 };
 
+template<>
+struct LaunchConfigure_impl<3> {
+	int width=LaunchConfigure_default::width,
+	    height=LaunchConfigure_default::height;
+	bool maximized=LaunchConfigure_default::maximized;
+	int dropFilesLimit=LaunchConfigure_default::dropFilesLimit;
+	char directory[512]=LaunchConfigure_default_directory;	//LaunchConfigure_default::directory is not available
+	bool rememberLastDirectory=LaunchConfigure_default::rememberLastDirectory;
+};
 
-ConfigureIO::ConfigureIO()	:configureFileName("") {}
 
-//ConfigureIO::ConfigureIO(const std::string& _configureFileName)	:configureFileName(_configureFileName) {}
-ConfigureIO::ConfigureIO(const QString& _configureFileName)	:configureFileName(_configureFileName) {}
-
-/*
-ConfigureIO::~ConfigureIO()
+ConfigureIO::ConfigureIO()	
+	:configureFileName("")
 {
-	save();
+	
 }
-*/
+
+ConfigureIO::ConfigureIO(const QString& _configureFileName)
+	:configureFileName(_configureFileName)
+{
+	
+}
+
 
 bool ConfigureIO::load(void)
 {
-	//std::fstream configStream(configureFileName, std::ios_base::binary|std::ios_base::in);
 	std::fstream configStream(configureFileName.toStdString(), std::ios_base::binary|std::ios_base::in);
 
 	bool successful=true;
@@ -59,6 +69,10 @@ bool ConfigureIO::load(void)
 
 			case 2:
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<2>));
+				break;
+				
+			case 3:
+				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<3>));
 				break;
 
 			case latestFormat:
@@ -90,7 +104,6 @@ bool ConfigureIO::load(const QString& _configureFileName)
 
 bool ConfigureIO::save(void)const
 {
-	//std::fstream configStream(configureFileName, std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
 	std::fstream configStream(configureFileName.toStdString(), std::ios_base::binary | std::ios_base::out | std::ios_base::trunc);
 
 	if(configStream) {

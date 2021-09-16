@@ -2,7 +2,7 @@
 
 #include <Qt>
 #include <QMessageBox>
-
+#include <QCursor>
 
 #include "logger.h"
 #include <cmath>
@@ -46,7 +46,7 @@ ViewerInterface::ViewerInterface(QWidget *parent)
 	rightClickMenu->addSeparator();
 	rightClickMenu->addAction(closeAction);
 
-	connect(this, &ViewerInterface::customContextMenuRequested, [&] {rightClickMenu->exec(mousePos);});
+	connect(this, &ViewerInterface::customContextMenuRequested, [&] {rightClickMenu->exec(QCursor::pos());});
 	connect(zoominAction, &QAction::triggered, [&] {zoom(1);});
 	connect(zoomoutAction, &QAction::triggered, [&] {zoom(-1);});
 	connect(fitToWindowAction, &QAction::triggered, this, fitSize);

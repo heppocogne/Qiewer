@@ -117,7 +117,7 @@ bool MainWindow::addImage(const QString& imageFileName)
 		}
 	}
 
-	if(viewertabs->count()<=idx) {
+	if(configureIO.config.allowDuplicatedFiles || viewertabs->count()<=idx) {
 		const auto imageFormat=QImageReader::imageFormat(imageFileName);
 
 		logger.write("format="+QString(imageFormat), LOG_FROM);
@@ -317,7 +317,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	if(viewertabs->count()<=1 || QMessageBox::question(this, "Close Confirmation", "Exit?", QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes) {
+	if((!configureIO.config.confirmBeforeQuit) || viewertabs->count()<=1 || QMessageBox::question(this, "Close Confirmation", "Exit?", QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes) {
 		event->accept();
 	} else {
 		event->ignore();
