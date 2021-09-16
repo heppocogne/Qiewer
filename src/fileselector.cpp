@@ -8,8 +8,7 @@
 #include "nameutil.h"
 
 FileSelector::FileSelector(QWidget* parent)
-	:QObject(parent),
-	 parentWidget(parent)
+	:QObject(parent)
 {}
 
 void FileSelector::open(void)
@@ -18,7 +17,7 @@ void FileSelector::open(void)
 	if(!(configureIO.config.rememberLastDirectory && dir!="" && QDir(dir).exists())) {
 		dir=QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 	}
-	const QString selected=QFileDialog::getOpenFileName(parentWidget,
+	const QString selected=QFileDialog::getOpenFileName(static_cast<QWidget*>(parent()),
 	                       "Open File",
 	                       dir,
 	                       "Images (*.png *.jpg *.bmp *.gif *.svg)");

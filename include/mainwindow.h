@@ -20,6 +20,7 @@ class ViewerInterface;
 class MainWindow: public QMainWindow
 {
 		Q_OBJECT
+		
 		QTabWidget* const viewertabs;
 		QToolBar* const toolbar;
 		

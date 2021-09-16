@@ -8,8 +8,8 @@
 #include <cmath>
 
 
-const double ViewerInterface::virtualScaleMax=10.0;
-const double ViewerInterface::virtualScaleMin=0.1;
+double ViewerInterface::virtualScaleMax=10.0;
+double ViewerInterface::virtualScaleMin=0.1;
 
 ViewerInterface::ViewerInterface(QWidget *parent)
 	:QGraphicsView(parent),
@@ -96,7 +96,7 @@ QSize ViewerInterface::sizeHint(void)const
 }
 
 
-double ViewerInterface::virtualScale(void)const
+double ViewerInterface::getVirtualScale(void)const
 {
 	return std::pow(10, virtualLogScale);
 }
@@ -123,9 +123,9 @@ void ViewerInterface::setVirtualLogScale(double vlog_scale)
 	virtualLogScale=vlog_scale;
 }
 
-double ViewerInterface::actualScale(void)const
+double ViewerInterface::getActualScale(void)const
 {
-	return baseScale*virtualScale();
+	return baseScale*getVirtualScale();
 }
 
 //viewport -> item
@@ -137,10 +137,9 @@ QPointF ViewerInterface::mapToItem(int x, int y)const
 QPointF ViewerInterface::mapToItem(const QPoint& point)const
 {
 	const auto diff=QPoint(point.x()-pixmapRect.x(), point.y()-pixmapRect.y());
-	return diff/actualScale();
+	return diff/getActualScale();
 }
-
-//item -> viewport
+//item -> viewport
 QPointF ViewerInterface::mapFromItem(qreal x,qreal y)const
 {
 	return mapFromItem(QPointF(x, y));
@@ -148,14 +147,14 @@ QPointF ViewerInterface::mapFromItem(qreal x,qreal y)const
 
 QPointF ViewerInterface::mapFromItem(const QPointF& point)const
 {
-	return QPointF(pixmapRect.x()+point.x()*actualScale(), pixmapRect.y()+point.y()*actualScale());
+	return QPointF(pixmapRect.x()+point.x()*getActualScale(), pixmapRect.y()+point.y()*getActualScale());
 }
 
 
 void ViewerInterface::updatePixmapRect(void)
 {
-	pixmapRect.setWidth(int(rawSize.width()*actualScale()));
-	pixmapRect.setHeight(int(rawSize.height()*actualScale()));
+	pixmapRect.setWidth(int(rawSize.width()*getActualScale()));
+	pixmapRect.setHeight(int(rawSize.height()*getActualScale()));
 }
 
 void ViewerInterface::updatePixmapRect(const QPointF& pos)
@@ -296,7 +295,7 @@ void ViewerInterface::actualSize(void)
 {
 	viewActualSize=true;
 
-	if(actualScale()!=1.0) {
+	if(getActualScale()!=1.0) {
 		const auto onScreen=QPoint(width()/2, height()/2);
 		const auto onPixmap=mapToItem(onScreen);
 		setVirtualScale(1.0/baseScale);

@@ -3,13 +3,13 @@
 
 #include <QObject>
 #include <QString>
+#include <QWidget>
 
 #include "configure.h"
 
 class FileSelector: public QObject
 {
 		Q_OBJECT
-		QWidget* const parentWidget;
 	public:
 		FileSelector(QWidget* parent=nullptr);
 

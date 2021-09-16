@@ -37,16 +37,17 @@ class ViewerInterface: public QGraphicsView
 		//static Qt::TransformationMode transformationMode;
 		bool leftClick;
 		QPoint mousePos;
-		static const double virtualScaleMax;
-		static const double virtualScaleMin;
+		static double virtualScaleMax;
+		static double virtualScaleMin;
+		
 		double baseScale;	//image scale to fit to draw area (not affect coordinate system)
 		double virtualLogScale;	//relative scale to draw area (〃)
 
 		void updateBaseScale(void);
-		double virtualScale(void)const;
+		double getVirtualScale(void)const;
 		void setVirtualScale(double v_scale);
 		void setVirtualLogScale(double v_scale);
-		double actualScale(void)const;
+		double getActualScale(void)const;
 
 		bool viewActualSize;
 
