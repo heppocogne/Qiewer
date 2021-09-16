@@ -1,5 +1,15 @@
 #include "configure.h"
 
+#include <Qt>
+#include <QObject>
+#include <QDialog>
+#include <QLabel>
+#include <QPushButton>
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QVBoxLayout>
+
+
 //older formats here
 template<>
 struct LaunchConfigure_impl<0> {
@@ -33,16 +43,16 @@ struct LaunchConfigure_impl<3> {
 };
 
 
-ConfigureIO::ConfigureIO()	
+ConfigureIO::ConfigureIO()
 	:configureFileName("")
 {
-	
+
 }
 
 ConfigureIO::ConfigureIO(const QString& _configureFileName)
 	:configureFileName(_configureFileName)
 {
-	
+
 }
 
 
@@ -70,7 +80,7 @@ bool ConfigureIO::load(void)
 			case 2:
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<2>));
 				break;
-				
+
 			case 3:
 				configStream.read(reinterpret_cast<char*>(&config), sizeof(LaunchConfigure_impl<3>));
 				break;
@@ -124,4 +134,66 @@ bool ConfigureIO::save(void)const
 void ConfigureIO::reset(void)
 {
 	config=LaunchConfigure();
+}
+
+
+void ConfigureIO::openConfigureDialog(QWidget* dialogParent)
+{
+	QDialog* configureDialog=new QDialog(dialogParent);
+
+
+
+	if(dialogParent==nullptr) {
+		delete configureDialog;
+	}
+}
+
+
+
+bool ConfigureIO::openCloseConfirmDialog(QWidget* dialogParent)
+{
+	QDialog* confirmDialog=new QDialog(dialogParent);
+	confirmDialog->setWindowTitle("Close Confirmation");
+
+	QBoxLayout* const mainLayout=new QVBoxLayout(confirmDialog);
+	QBoxLayout* const subLayout=new QHBoxLayout(confirmDialog);
+
+	QLabel* const questionMessage=new QLabel("Exit?", confirmDialog);
+	QPushButton* const yesButton=new QPushButton("Yes", confirmDialog);
+	QPushButton* const noButton=new QPushButton("No", confirmDialog);
+	QCheckBox* const neverAskAgain=new QCheckBox("Don't ask me again", confirmDialog);
+
+	subLayout->addWidget(yesButton);
+	subLayout->addWidget(noButton);
+	mainLayout->addWidget(questionMessage, 0, Qt::AlignHCenter);
+	mainLayout->addLayout(subLayout);
+	mainLayout->addWidget(neverAskAgain, 0, Qt::AlignHCenter);
+
+	confirmDialog->setLayout(mainLayout);
+
+	bool result=false;
+	int checkState=configureIO.config.confirmBeforeQuit ? Qt::Unchecked : Qt::Checked;
+	neverAskAgain->setCheckState(static_cast<Qt::CheckState>(checkState));
+
+	QObject::connect(yesButton, &QPushButton::clicked, [&] {
+		result=true;
+		confirmDialog->close();
+	});
+	QObject::connect(noButton, &QPushButton::clicked, [&] {
+		result=false;
+		confirmDialog->close();
+	});
+	QObject::connect(neverAskAgain, &QCheckBox::stateChanged, [&](int state) {
+		checkState=state;
+	});
+
+	confirmDialog->exec();
+
+	configureIO.config.confirmBeforeQuit=(checkState==Qt::Unchecked);
+
+	if(dialogParent==nullptr) {
+		delete confirmDialog;
+	}
+
+	return result;
 }

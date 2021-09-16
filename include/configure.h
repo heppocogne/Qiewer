@@ -2,6 +2,7 @@
 #define CONFIGURE_H_INCLUDED
 
 #include <QString>
+#include <QWidget>
 
 #include "logger.h"
 
@@ -53,6 +54,9 @@ class ConfigureIO
 		bool load(void);
 		bool save(void)const;
 		void reset(void);
+		
+		void openConfigureDialog(QWidget* dialogParent=nullptr);
+		bool openCloseConfirmDialog(QWidget* dialogParent=nullptr);
 
 		using LaunchConfigure=LaunchConfigure_impl<latestFormat>;
 		LaunchConfigure config;

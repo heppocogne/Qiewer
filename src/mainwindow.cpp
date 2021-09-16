@@ -317,7 +317,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	if((!configureIO.config.confirmBeforeQuit) || viewertabs->count()<=1 || QMessageBox::question(this, "Close Confirmation", "Exit?", QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes) {
+	if((!configureIO.config.confirmBeforeQuit) || viewertabs->count()<=1 || configureIO.openCloseConfirmDialog(this)) {
 		event->accept();
 	} else {
 		event->ignore();
