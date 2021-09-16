@@ -6,6 +6,7 @@
 #include <QTabWidget>
 #include <QResizeEvent>
 #include <QMouseEvent>
+#include <QCloseEvent>
 #include <QEvent>
 #include <QSharedMemory>
 #include <QTimer>
@@ -32,7 +33,8 @@ class MainWindow: public QMainWindow
 	public:
 		constexpr static const char* sharedMemoryKey="Qiewer/image/input";
 		constexpr static const size_t sharedMemorySize=1024;
-		MainWindow();
+		
+		MainWindow(QWidget* parent=nullptr);
 		virtual ~MainWindow();
 		void showProperly(void);
 		
@@ -55,6 +57,7 @@ class MainWindow: public QMainWindow
 		virtual void changeEvent(QEvent* event);
 		virtual void dragEnterEvent(QDragEnterEvent* event);
 		virtual void dropEvent(QDropEvent* event);
+		virtual void closeEvent(QCloseEvent *event);
 };
 
 #endif

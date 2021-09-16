@@ -18,7 +18,7 @@
 
 Logger logger;
 ConfigureIO configureIO;
-const Version version(0, 3, 5, "alpha");
+const Version version(0, 3, 6, "alpha");
 
 
 int main(int argc, char* argv[])
@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
 	QSharedMemory input(MainWindow::sharedMemoryKey);
 	input.attach();
 
-	int exitCode;
+	int exitCode=1;
 
 	if(input.isAttached()) {	//there's already Qiewer process
 		if(MainWindow::sharedMemorySize<=std::strlen(argv[1])) {
@@ -43,7 +43,6 @@ int main(int argc, char* argv[])
 		const auto timeout=std::chrono::seconds(10);
 		const auto retryInterval=std::chrono::milliseconds(500);
 
-		exitCode=1;
 		for(auto t=std::chrono::milliseconds(0); t<timeout; t+=retryInterval) {
 			if(input.lock()) {
 				strcpy(reinterpret_cast<char*>(input.data()), argv[1]);
@@ -79,7 +78,6 @@ int main(int argc, char* argv[])
 			exitCode=app.exec();
 		} else {
 			app.exit(1);
-			exitCode=1;	//unreachable code
 		}
 
 		configureIO.save();

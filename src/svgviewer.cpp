@@ -30,10 +30,4 @@ void SvgViewer::paintEvent(QPaintEvent *event)
 	QPainter painter(viewport());
 	
 	renderer->render(&painter, pixmapRect);
-	/*
-	QPainter painter(viewport());
-	painter.setRenderHint(QPainter::SmoothPixmapTransform,true);
-
-	painter.drawPixmap(pixmapRect, rawPixmap);
-	*/
 }

@@ -19,12 +19,12 @@
 #include <chrono>
 #include <cstring>
 #if defined(_WIN32) || defined(_WIN64)
-	#include <windows.h>
+#include <windows.h>
 #endif
 
 
-MainWindow::MainWindow()
-	:QMainWindow(nullptr, Qt::Window),
+MainWindow::MainWindow(QWidget* parent)
+	:QMainWindow(parent, Qt::Window),
 	 viewertabs(new QTabWidget(this)),
 	 toolbar(new QToolBar(this)),
 	 fileSelector(new FileSelector(this)),
@@ -120,16 +120,16 @@ bool MainWindow::addImage(const QString& imageFileName)
 
 	if(viewertabs->count()<=idx) {
 		const auto imageFormat=QImageReader::imageFormat(imageFileName);
-		
+
 		logger.write("format="+QString(imageFormat), LOG_FROM);
-		
+
 		ViewerInterface* viewer;
-		if(imageFormat=="svg" || imageFormat=="svgz"){
+		if(imageFormat=="svg" || imageFormat=="svgz") {
 			viewer=new SvgViewer(viewertabs);
-		}else{
+		} else {
 			viewer=new ImageViewer(viewertabs);
 		}
-		
+
 		//ViewerInterface* const viewer=new ImageViewer(viewertabs);
 		if(viewer->setImageFile(imageFileName)) {
 			idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
@@ -162,7 +162,8 @@ void MainWindow::reload(void)
 {
 	ViewerInterface* const viewer=currentView();
 	if(viewer) {
-		viewer->setImageFile(viewer->getFileName());
+		//viewer->setImageFile(viewer->getFileName());
+		viewer->reload();
 	}
 }
 
@@ -248,10 +249,10 @@ void MainWindow::checkMousePosition(void)
 	const auto pos_global=QCursor::pos();
 	const auto pos_window=this->mapFromGlobal(pos_global);
 	if(geometry().left()<=pos_global.x() &&
-			pos_global.x()<=geometry().right() &&
-			-toolbar->geometry().height()<=pos_window.y() &&
-			pos_window.y()<=toolbar->geometry().bottom()*2) {
-			
+	   pos_global.x()<=geometry().right() &&
+	   -toolbar->geometry().height()<=pos_window.y() &&
+	   pos_window.y()<=toolbar->geometry().bottom()*2) {
+
 		if(!toolbar->isVisible()) {
 			auto toolbarGeometry=toolbar->geometry();
 			toolbarGeometry.setLeft(0);
@@ -315,5 +316,15 @@ void MainWindow::dropEvent(QDropEvent *event)
 		const QString msg="Qiewer cannot accept more than "+QString::number(configureIO.config.dropFilesLimit)+" files!";
 		logger.write(msg, LOG_FROM);
 		QMessageBox::warning(this, "Warning: Too much files", msg);
+	}
+}
+
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+	if(viewertabs->count()<=1 || QMessageBox::question(this, "Close Confirmation", "Exit?", QMessageBox::Yes | QMessageBox::No)==QMessageBox::Yes) {
+		event->accept();
+	} else {
+		event->ignore();
 	}
 }

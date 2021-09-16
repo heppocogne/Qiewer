@@ -42,6 +42,10 @@ bool ViewerInterface::setImageFile(const QString& srcImageFile)
 	}
 }
 
+bool ViewerInterface::reload(void){
+	return setImageFile(filename);
+}
+
 const QString& ViewerInterface::getFileName(void)const
 {
 	return filename;

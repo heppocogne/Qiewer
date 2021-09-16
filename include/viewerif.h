@@ -16,6 +16,7 @@
 class ViewerInterface: public QGraphicsView
 {
 		Q_OBJECT
+		
 	protected:
 		QRect pixmapRect;	//used to draw pixmap
 		QSize rawSize;
@@ -70,11 +71,12 @@ class ViewerInterface: public QGraphicsView
 		virtual QSize sizeHint(void)const;
 		const QString& getFileName(void)const;
 
-	public slots:
+	//public slots:	//public functions
 		bool setImageFile(const QString& srcImageFile);
 		void fitSize(void);	//fit to screen; virtualScale=1
 		void actualSize(void);	//view original size; actualScale=1
 		void zoom(int value);
+		bool reload(void);
 };
 
 

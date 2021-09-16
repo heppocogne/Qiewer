@@ -13,6 +13,7 @@ class ImageViewer: public ViewerInterface
 		Q_OBJECT
 
 		QPixmap rawPixmap;
+		
 	public:
 		ImageViewer(QWidget* parent=nullptr);
 		virtual ~ImageViewer() {}

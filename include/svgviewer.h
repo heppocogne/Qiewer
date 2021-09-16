@@ -3,6 +3,8 @@
 
 #include <QWidget>
 #include <QSvgRenderer>
+#include <QString>
+#include <QPaintEvent>
 
 #include "viewerif.h"
 
@@ -12,9 +14,9 @@ class SvgViewer: public ViewerInterface
 		Q_OBJECT
 		
 		QSvgRenderer* const renderer;
-
+		
 	public:
-		SvgViewer(QWidget* parent);
+		SvgViewer(QWidget* parent=nullptr);
 		virtual ~SvgViewer() {}
 
 	protected:
