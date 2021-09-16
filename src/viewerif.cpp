@@ -1,8 +1,8 @@
 #include "viewerif.h"
 
 #include <Qt>
-//#include <QScreen>
 #include <QMessageBox>
+
 
 #include "logger.h"
 #include <cmath>
@@ -13,6 +13,12 @@ const double ViewerInterface::virtualScaleMin=0.1;
 
 ViewerInterface::ViewerInterface(QWidget *parent)
 	:QGraphicsView(parent),
+	 rightClickMenu(new QMenu(this)),
+	 zoominAction(new QAction("Zoom In", rightClickMenu)),
+	 zoomoutAction(new QAction("Zoom Out", rightClickMenu)),
+	 fitToWindowAction(new QAction("Fit to Window", rightClickMenu)),
+	 actualSizeAction(new QAction("Actual Size", rightClickMenu)),
+	 closeAction(new QAction("Close", rightClickMenu)),
 	 leftClick(false),
 	 baseScale(1.0),
 	 virtualLogScale(0.0),
@@ -22,6 +28,30 @@ ViewerInterface::ViewerInterface(QWidget *parent)
 	setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	setCacheMode(QGraphicsView::CacheBackground);
 	setMouseTracking(true);
+
+	//setup context menu
+	setContextMenuPolicy(Qt::CustomContextMenu);
+	/*
+	Zoom In
+	Zoom Out
+	Fit to Window
+	Actual Size
+	----------------
+	Close
+	*/
+	rightClickMenu->addAction(zoominAction);
+	rightClickMenu->addAction(zoomoutAction);
+	rightClickMenu->addAction(fitToWindowAction);
+	rightClickMenu->addAction(actualSizeAction);
+	rightClickMenu->addSeparator();
+	rightClickMenu->addAction(closeAction);
+
+	connect(this, &ViewerInterface::customContextMenuRequested, [&] {rightClickMenu->exec(mousePos);});
+	connect(zoominAction, &QAction::triggered, [&] {zoom(1);});
+	connect(zoomoutAction, &QAction::triggered, [&] {zoom(-1);});
+	connect(fitToWindowAction, &QAction::triggered, this, fitSize);
+	connect(actualSizeAction, &QAction::triggered, this, actualSize);
+	connect(closeAction, &QAction::triggered, [&]{emit closeMe(this);});
 }
 
 
@@ -42,7 +72,8 @@ bool ViewerInterface::setImageFile(const QString& srcImageFile)
 	}
 }
 
-bool ViewerInterface::reload(void){
+bool ViewerInterface::reload(void)
+{
 	return setImageFile(filename);
 }
 

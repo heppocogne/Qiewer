@@ -11,17 +11,25 @@
 #include <QGraphicsView>
 #include <QPoint>
 #include <QString>
+#include <QMenu>
+#include <QAction>
 
 
 class ViewerInterface: public QGraphicsView
 {
 		Q_OBJECT
-		
+
 	protected:
 		QRect pixmapRect;	//used to draw pixmap
 		QSize rawSize;
 		QString filename;
-		
+		QMenu* const rightClickMenu;
+		QAction* const zoominAction;
+		QAction* const zoomoutAction;
+		QAction* const fitToWindowAction;
+		QAction* const actualSizeAction;
+		QAction* const closeAction;
+
 		void updatePixmapRect(void);	//update pixmapRect according to scale
 		void updatePixmapRect(const QPointF& pos);	//set position and update
 		void updatePixmapRect(double x,double y);
@@ -54,9 +62,9 @@ class ViewerInterface: public QGraphicsView
 		void positionMapping(const QPointF& pixmapPos, const QPointF& screenPos);
 		void adjustPosition(void);
 		void zoomMain(int steps, const QPoint& onScreen);
-		
+
 		void unknownFormatErrorDialog(void);
-		
+
 		virtual bool load(const QString&)=0;
 		virtual void	mouseMoveEvent(QMouseEvent *event);
 		virtual void	mousePressEvent(QMouseEvent *event);
@@ -71,12 +79,15 @@ class ViewerInterface: public QGraphicsView
 		virtual QSize sizeHint(void)const;
 		const QString& getFileName(void)const;
 
-	//public slots:	//public functions
+	public slots:	//public functions
 		bool setImageFile(const QString& srcImageFile);
 		void fitSize(void);	//fit to screen; virtualScale=1
 		void actualSize(void);	//view original size; actualScale=1
 		void zoom(int value);
 		bool reload(void);
+
+	signals:
+		void closeMe(ViewerInterface* viewer);
 };
 
 

@@ -53,21 +53,20 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(fileSelector, &FileSelector::fileSelected, this, &MainWindow::addImage);
 
 	//setup reload icon
+	//setup setting icon
 
 	//setup zoomin icon
 	toolbar->addSeparator();
-	toolbar->addAction(QIcon(":/rc/zoomin24.png"), "Zoom In", this, &MainWindow::zoomin);
+	toolbar->addAction(QIcon(":/rc/zoomin24.png"), "Zoom In", [&] {zoom(1);});
 
 	//setup zooout icon
-	toolbar->addAction(QIcon(":/rc/zoomout24.png"), "Zoom Out", this, &MainWindow::zoomout);
+	toolbar->addAction(QIcon(":/rc/zoomout24.png"), "Zoom Out",  [&] {zoom(-1);});
 
 	//setup view actual size icon
 	toolbar->addAction(QIcon(":/rc/100%24.png"), "Actual Size", this, &MainWindow::actualSize);
 
 	//setup fit size icon
 	toolbar->addAction(QIcon(":/rc/fit24.png"), "Fit to Window", this, &MainWindow::fitSize);
-
-	//setup setting icon
 
 
 	//setup shared memory
@@ -129,6 +128,7 @@ bool MainWindow::addImage(const QString& imageFileName)
 		} else {
 			viewer=new ImageViewer(viewertabs);
 		}
+		connect(viewer, &ViewerInterface::closeMe, this, &MainWindow::viewerCloseRequested);
 
 		//ViewerInterface* const viewer=new ImageViewer(viewertabs);
 		if(viewer->setImageFile(imageFileName)) {
@@ -158,6 +158,11 @@ bool MainWindow::addImage(const QString& imageFileName)
 	return true;
 }
 
+void MainWindow::viewerCloseRequested(ViewerInterface* viewer)
+{
+	this->closeTab(viewertabs->indexOf(viewer));
+}
+
 void MainWindow::reload(void)
 {
 	ViewerInterface* const viewer=currentView();
@@ -181,16 +186,6 @@ void MainWindow::actualSize(void)
 	if(viewer) {
 		viewer->actualSize();
 	}
-}
-
-void  MainWindow::zoomin(void)
-{
-	zoom(1);
-}
-
-void MainWindow::zoomout(void)
-{
-	zoom(-1);
 }
 
 void MainWindow::zoom(int value)

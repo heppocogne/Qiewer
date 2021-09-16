@@ -44,11 +44,10 @@ class MainWindow: public QMainWindow
 		void checkSharedMemory(void);
 		void checkMousePosition(void);
 		bool addImage(const QString& imageFileName);
+		void viewerCloseRequested(ViewerInterface* viewer);
 		void reload(void);
 		void fitSize(void);
 		void actualSize(void);
-		void zoomin(void);
-		void zoomout(void);
 		void zoom(int value);
 		//void setting(void);
 
