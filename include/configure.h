@@ -1,13 +1,38 @@
 #ifndef CONFIGURE_H_INCLUDED
 #define CONFIGURE_H_INCLUDED
 
+
 #include <QString>
 #include <QWidget>
+#include <QFile>
 
 #include "logger.h"
 
-#include <fstream>
+class Configure
+{
+		QString configureFileName;
+		Configure(const Configure& other)=default;
+	public:
+		Configure();
+		bool load(const QString& configureFileName);
+		bool save(void);
+		void reset(void);
+		
+		void openConfigureDialog(QWidget* dialogParent=nullptr);
+		bool openCloseConfirmDialog(QWidget* dialogParent=nullptr);
 
+		int windowWidth;
+		int windowHeight;
+		bool maximized;
+		QString directory;
+		bool rememberLastDirectory;
+		bool allowDuplicatedFiles;
+		bool confirmBeforeQuit;
+};
+extern Configure configure;
+
+
+# if 0
 #define LATEST_CONFIGURE_FORMAT 4
 
 
@@ -20,7 +45,7 @@ struct LaunchConfigure_impl {
 	constexpr static const int dropFilesLimit=8;
 
 	//when rememberLastDirectory=true, 'directory' is the last directory, otherwise, user-set directory
-	#define LaunchConfigure_default_directory ""
+#define LaunchConfigure_default_directory ""
 	constexpr static const char* directory=LaunchConfigure_default_directory;
 	constexpr static const bool rememberLastDirectory=true;
 	constexpr static const bool allowDuplicatedFiles=false;
@@ -54,7 +79,7 @@ class ConfigureIO
 		bool load(void);
 		bool save(void)const;
 		void reset(void);
-		
+
 		void openConfigureDialog(QWidget* dialogParent=nullptr);
 		bool openCloseConfirmDialog(QWidget* dialogParent=nullptr);
 
@@ -64,4 +89,5 @@ class ConfigureIO
 
 extern ConfigureIO configureIO;
 
+#endif
 #endif

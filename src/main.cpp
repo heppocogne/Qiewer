@@ -17,7 +17,7 @@
 
 
 Logger logger;
-ConfigureIO configureIO;
+Configure configure;
 const Version version(0, 3, 6, "alpha");
 
 
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 #endif
 
 		logger.openFile(directoryName+"\\qiewer.log");
-		configureIO.load(directoryName+"\\.qiewerconfig");
+		configure.load(directoryName+"\\.qiewerconfig");
 
 		logger.write("Qiewer version:	"+(QString)version, LOG_FROM);
 		logger.write("QuickTime version:	"+QString(qVersion()), LOG_FROM);
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 			app.exit(1);
 		}
 
-		configureIO.save();
+		configure.save();
 
 		delete window;
 		return exitCode;

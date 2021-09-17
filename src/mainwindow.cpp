@@ -117,7 +117,7 @@ bool MainWindow::addImage(const QString& imageFileName)
 		}
 	}
 
-	if(configureIO.config.allowDuplicatedFiles || viewertabs->count()<=idx) {
+	if(configure.allowDuplicatedFiles || viewertabs->count()<=idx) {
 		const auto imageFormat=QImageReader::imageFormat(imageFileName);
 
 		logger.write("format="+QString(imageFormat), LOG_FROM);
@@ -141,7 +141,7 @@ bool MainWindow::addImage(const QString& imageFileName)
 	viewertabs->setCurrentIndex(idx);
 
 	setWindowState(windowState()&~Qt::WindowMinimized);
-	if(configureIO.config.maximized) {
+	if(configure.maximized) {
 		setWindowState(windowState()&Qt::WindowMaximized);
 	}
 
@@ -199,15 +199,15 @@ void MainWindow::zoom(int value)
 
 void MainWindow::showProperly(void)
 {
-	if(configureIO.config.maximized) {
+	if(configure.maximized) {
 		logger.write("show maximized window", LOG_FROM);
 		showMaximized();
 	} else {
-		logger.write("show normal window:	"+QString::number(configureIO.config.width)+"x"+QString::number(configureIO.config.height), LOG_FROM);
+		logger.write("show normal window:	"+QString::number(configure.windowWidth)+"x"+QString::number(configure.windowHeight), LOG_FROM);
 
 		const auto& available=QGuiApplication::primaryScreen()->availableSize();
-		setGeometry((available.width()-configureIO.config.width)/2, (available.height()-configureIO.config.height)/2,
-		            configureIO.config.width, configureIO.config.height);
+		setGeometry((available.width()-configure.windowWidth)/2, (available.height()-configure.windowHeight)/2,
+		            configure.windowWidth, configure.windowHeight);
 		show();
 	}
 }
@@ -271,8 +271,8 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 	toolbarGeometry.setRight(event->size().width());
 	toolbar->setGeometry(toolbarGeometry);
 
-	configureIO.config.width=event->size().width();
-	configureIO.config.height=event->size().height();
+	configure.windowWidth=event->size().width();
+	configure.windowHeight=event->size().height();
 }
 
 
@@ -281,9 +281,9 @@ void MainWindow::changeEvent(QEvent* event)
 	switch(event->type()) {
 		case  QEvent::WindowStateChange:
 			if(windowState()&Qt::WindowMaximized) {
-				configureIO.config.maximized=true;
+				configure.maximized=true;
 			} else {
-				configureIO.config.maximized=false;
+				configure.maximized=false;
 			}
 			break;
 		default:
@@ -303,21 +303,15 @@ void MainWindow::dragEnterEvent(QDragEnterEvent *event)
 
 void MainWindow::dropEvent(QDropEvent *event)
 {
-	if(event->mimeData()->urls().size()<configureIO.config.dropFilesLimit) {
-		for(const auto& url: event->mimeData()->urls()) {
-			addImage(url.toLocalFile().replace('/', '\\'));
-		}
-	} else {
-		const QString msg="Qiewer cannot accept more than "+QString::number(configureIO.config.dropFilesLimit)+" files!";
-		logger.write(msg, LOG_FROM);
-		QMessageBox::warning(this, "Warning: Too much files", msg);
+	for(const auto& url: event->mimeData()->urls()) {
+		addImage(url.toLocalFile().replace('/', '\\'));
 	}
 }
 
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	if((!configureIO.config.confirmBeforeQuit) || viewertabs->count()<=1 || configureIO.openCloseConfirmDialog(this)) {
+	if((!configure.confirmBeforeQuit) || viewertabs->count()<=1 || configure.openCloseConfirmDialog(this)) {
 		event->accept();
 	} else {
 		event->ignore();

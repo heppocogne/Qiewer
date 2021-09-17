@@ -13,8 +13,8 @@ FileSelector::FileSelector(QWidget* parent)
 
 void FileSelector::open(void)
 {
-	QString dir=configureIO.config.directory;
-	if(!(configureIO.config.rememberLastDirectory && dir!="" && QDir(dir).exists())) {
+	QString dir=configure.directory;
+	if(!(configure.rememberLastDirectory && dir!="" && QDir(dir).exists())) {
 		dir=QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 	}
 	const QString selected=QFileDialog::getOpenFileName(static_cast<QWidget*>(parent()),
@@ -25,10 +25,13 @@ void FileSelector::open(void)
 	if(!selected.isNull()) {
 		emit fileSelected(selected);
 
-		dir=extractDirectoryName(selected);
-		const char* dir_c_str=dir.toStdString().c_str();
-		if(configureIO.config.rememberLastDirectory && std::strlen(dir_c_str)<512) {
-			std::strcpy(configureIO.config.directory, dir_c_str);
+		if(configure.rememberLastDirectory) {
+			configure.directory=extractDirectoryName(selected);
 		}
+		/*
+		const char* dir_c_str=dir.toStdString().c_str();
+		if(configure.rememberLastDirectory && std::strlen(dir_c_str)<512) {
+			std::strcpy(configure.directory, dir_c_str);
+		}*/
 	}
 }
