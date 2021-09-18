@@ -29,8 +29,8 @@ class ArrayPipe
 		~ArrayPipe();
 		bool attach(void);
 		bool create(void);
-		bool paste(const QStringList& values);
-		QStringList cut(void);
+		bool push(const QStringList& values);
+		QStringList popAll(void);
 		int currentSize(void);
 
 		constexpr static const int bufferSize=sizeof(buf);

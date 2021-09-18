@@ -14,32 +14,8 @@ WinMutex::WinMutex(const wchar_t* mutexID)
 }
 
 
-WinMutex::~WinMutex()
-{
-	close();
-}
-
-
 WinMutex::State WinMutex::getState(void)const
 {
 	return state;
 }
 
-
-void WinMutex::close(void)
-{
-	/*
-	if(handle) {
-		CloseHandle(handle);
-		handle=nullptr;
-	}
-	*/
-}
-
-/*
-void WinMutex::release(void)
-{
-	ReleaseMutex(handle);
-	close();
-}
-*/

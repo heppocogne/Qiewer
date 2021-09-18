@@ -3,8 +3,6 @@
 
 #include <QString>
 
-#include <string>
-
 struct Version {
 	const int major, minor, patch;
 	const QString identifier;

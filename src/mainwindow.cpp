@@ -10,14 +10,14 @@
 #include <QMessageBox>
 #include <QCursor>
 #include <QIcon>
-#include <QWindowStateChangeEvent>
+#include <QLocalSocket>
+#include <QByteArray>
+#include <QIODevice>
 
 #include "imageviewer.h"
 #include "svgviewer.h"
 #include "nameutil.h"
 #include "logger.h"
-#include <chrono>
-#include <cstring>
 #if defined(_WIN32) || defined(_WIN64)
 #include <windows.h>
 #endif
@@ -28,9 +28,8 @@ MainWindow::MainWindow(QWidget* parent)
 	 viewertabs(new QTabWidget(this)),
 	 toolbar(new QToolBar(this)),
 	 fileSelector(new FileSelector(this)),
-	 arrayPipe(sharedMemoryPrefix),
-	 sharedMemoryTick(new QTimer(this)),
-	 cursorTick(new QTimer(this))
+	 cursorTick(new QTimer(this)),
+	 server(new QLocalServer(this))
 {
 	//setup window
 	setAcceptDrops(true);
@@ -69,17 +68,14 @@ MainWindow::MainWindow(QWidget* parent)
 	toolbar->addAction(QIcon(":/rc/fit24.png"), "Fit to Window", this, &MainWindow::fitSize);
 
 
-	//setup shared memory
-	arrayPipe.create();
-	
+	//setup server
+	server->listen(serverName);
+	connect(server, &QLocalServer::newConnection, this, &MainWindow::processConnection);
 
 	//connect signals
 	connect(viewertabs, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
-	connect(sharedMemoryTick, &QTimer::timeout, this, &MainWindow::checkSharedMemory);
 	connect(cursorTick, &QTimer::timeout, this, &MainWindow::checkMousePosition);
 
-	//check shared memory every 0.2s
-	sharedMemoryTick->start(std::chrono::milliseconds(200));
 
 	//check mouse position every 0.025s
 	cursorTick->start(std::chrono::milliseconds(25));
@@ -88,7 +84,6 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
-	sharedMemoryTick->stop();
 	cursorTick->stop();
 }
 
@@ -125,12 +120,15 @@ int MainWindow::addImageMain(const QString& imageFileName)
 		} else {
 			viewer=new ImageViewer(viewertabs);
 		}
-		connect(viewer, &ViewerInterface::closeMe, this, &MainWindow::viewerCloseRequested);
 
 		//ViewerInterface* const viewer=new ImageViewer(viewertabs);
 		if(viewer->setImageFile(imageFileName)) {
+			connect(viewer, &ViewerInterface::closeMe, this, &MainWindow::viewerCloseRequested);
 			return viewertabs->addTab(viewer, extractFileName(imageFileName));
 		} else {
+			//delete viewer;
+			viewer->setParent(nullptr);
+			delete viewer;
 			return -1;
 		}
 	} else {
@@ -182,7 +180,7 @@ bool MainWindow::addImages(const QStringList& imageFileList)
 	}
 	if(idx<0)
 		return false;
-	
+
 	addImagePostProcess(idx);
 	return true;
 }
@@ -254,16 +252,6 @@ void MainWindow::closeTab(int idx)
 	} else {
 		idx=viewertabs->currentIndex();
 		logger.write("current tab["+QString::number(idx)+"]:	"+viewertabs->tabText(idx), LOG_FROM);
-	}
-}
-
-void MainWindow::checkSharedMemory(void)
-{
-	QStringList fileList=arrayPipe.cut();
-	if(fileList.size()>0)
-	{
-		logger.write(QString::number(fileList.size())+" filepaths in shared memory", LOG_FROM);
-		addImages(fileList);
 	}
 }
 
@@ -345,4 +333,27 @@ void MainWindow::closeEvent(QCloseEvent *event)
 	} else {
 		event->ignore();
 	}
+}
+
+
+void MainWindow::processConnection(void)
+{
+	QLocalSocket*const socket=server->nextPendingConnection();
+	connect(socket, &QLocalSocket::disconnected, socket, &QLocalSocket::deleteLater);
+	socket->waitForReadyRead();
+
+	QByteArray bytes=socket->readAll();
+	QDataStream input(&bytes, QIODevice::ReadOnly);
+	input.setVersion(QDataStream::Qt_5_15);
+	QStringList files;
+	while(!input.atEnd()) {
+		QByteArray data;
+		input>>data;
+		const QString file=QString::fromLocal8Bit(data);
+		logger.write("read from socket:"+file, LOG_FROM);
+		files<<file;
+	}
+	addImages(files);
+
+	socket->disconnectFromServer();
 }

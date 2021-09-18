@@ -14,9 +14,7 @@ class WinMutex
 			Created
 		};
 		State getState(void)const;
-		void close(void);
-		//void release(void);
-		~WinMutex();
+		
 	private:
 		State state;
 };

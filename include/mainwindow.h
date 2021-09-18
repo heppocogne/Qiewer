@@ -8,13 +8,12 @@
 #include <QMouseEvent>
 #include <QCloseEvent>
 #include <QEvent>
-#include <QSharedMemory>
 #include <QTimer>
 #include <QToolBar>
+#include <QLocalServer>
 
 #include "configure.h"
 #include "fileselector.h"
-#include "arraypipe.h"
 
 class ViewerInterface;
 
@@ -27,24 +26,22 @@ class MainWindow: public QMainWindow
 		
 		FileSelector* const fileSelector;
 
-		ArrayPipe arrayPipe;
-		QTimer* const sharedMemoryTick;
 		QTimer* const cursorTick;
+		
+		QLocalServer* const server;
 		
 		ViewerInterface* currentView(void)const;
 		int addImageMain(const QString& imageFileName);
 		void addImagePostProcess(int idx);
 public:
-		constexpr static const char* sharedMemoryPrefix="Qiewer/image/input/";
+		constexpr static const char* serverName="qiewer.image.input";
 		
 		MainWindow(QWidget* parent=nullptr);
 		virtual ~MainWindow();
 		void showProperly(void);
-		
 
 	public slots:
 		void closeTab(int idx);
-		void checkSharedMemory(void);
 		void checkMousePosition(void);
 		bool addImage(const QString& imageFileName);
 		bool addImages(const QStringList& imageFileList);
@@ -54,6 +51,7 @@ public:
 		void actualSize(void);
 		void zoom(int value);
 		//void setting(void);
+		void processConnection(void);
 
 	protected:
 		virtual void resizeEvent(QResizeEvent *event);

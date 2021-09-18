@@ -10,7 +10,7 @@ ArrayPipe::ArrayPipe(const QString& _keyPrefix, int timeout_ms, int retry_ms)
 	 timeout(std::chrono::milliseconds(timeout_ms)),
 	 retry(std::chrono::milliseconds(retry_ms))
 {
-	
+
 }
 
 
@@ -59,18 +59,20 @@ void ArrayPipe::clearElements(void)
 }
 
 
-bool ArrayPipe::paste(const QStringList& values)
+bool ArrayPipe::push(const QStringList& values)
 {
 	if(waitForLock(counter)) {
-		const int count=values.size();
+		int count;
+		memcpy(reinterpret_cast<char*>(&count), counter->constData(), sizeof(int));
+		
+		count+=values.size();
 		memcpy(counter->data(), &count, sizeof(int));
-
-		clearElements();
 
 		for(int i=0; i<values.size(); i++) {
 			const auto local8bit=values[i].toLocal8Bit();
 
-			QSharedMemory* const elem=new QSharedMemory(keyPrefix+QString::number(i), counter);
+			const int idx=(count-values.size())+i;
+			QSharedMemory* const elem=new QSharedMemory(keyPrefix+QString::number(idx), counter);
 			if(!elem->attach())
 				elem->create(bufferSize);
 			elem->lock();
@@ -86,7 +88,7 @@ bool ArrayPipe::paste(const QStringList& values)
 }
 
 
-QStringList ArrayPipe::cut(void)
+QStringList ArrayPipe::popAll(void)
 {
 	QStringList values;
 	if(waitForLock(counter)) {
@@ -108,6 +110,7 @@ QStringList ArrayPipe::cut(void)
 		}
 
 		counter->unlock();
+		clearElements();
 		return values;
 	}
 	return values;	//empty
