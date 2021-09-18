@@ -14,6 +14,7 @@
 
 #include "configure.h"
 #include "fileselector.h"
+#include "arraypipe.h"
 
 class ViewerInterface;
 
@@ -26,14 +27,15 @@ class MainWindow: public QMainWindow
 		
 		FileSelector* const fileSelector;
 
-		QSharedMemory* const sharedMemory;
+		ArrayPipe arrayPipe;
 		QTimer* const sharedMemoryTick;
 		QTimer* const cursorTick;
 		
 		ViewerInterface* currentView(void)const;
-	public:
-		constexpr static const char* sharedMemoryKey="Qiewer/image/input";
-		constexpr static const size_t sharedMemorySize=1024;
+		int addImageMain(const QString& imageFileName);
+		void addImagePostProcess(int idx);
+public:
+		constexpr static const char* sharedMemoryPrefix="Qiewer/image/input/";
 		
 		MainWindow(QWidget* parent=nullptr);
 		virtual ~MainWindow();
@@ -45,6 +47,7 @@ class MainWindow: public QMainWindow
 		void checkSharedMemory(void);
 		void checkMousePosition(void);
 		bool addImage(const QString& imageFileName);
+		bool addImages(const QStringList& imageFileList);
 		void viewerCloseRequested(ViewerInterface* viewer);
 		void reload(void);
 		void fitSize(void);

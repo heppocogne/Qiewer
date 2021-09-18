@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget* parent)
 	 viewertabs(new QTabWidget(this)),
 	 toolbar(new QToolBar(this)),
 	 fileSelector(new FileSelector(this)),
-	 sharedMemory(new QSharedMemory(sharedMemoryKey, this)),
+	 arrayPipe(sharedMemoryPrefix),
 	 sharedMemoryTick(new QTimer(this)),
 	 cursorTick(new QTimer(this))
 {
@@ -70,11 +70,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 
 	//setup shared memory
-	sharedMemory->create(sharedMemorySize);
-	sharedMemory->lock();
-	strcpy(reinterpret_cast<char*>(sharedMemory->data()), "");
-	sharedMemory->unlock();
-
+	arrayPipe.create();
+	
 
 	//connect signals
 	connect(viewertabs, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
@@ -106,7 +103,7 @@ ViewerInterface* MainWindow::currentView(void)const
 }
 
 
-bool MainWindow::addImage(const QString& imageFileName)
+int MainWindow::addImageMain(const QString& imageFileName)
 {
 	logger.write("add image:	"+imageFileName, LOG_FROM);
 
@@ -132,12 +129,18 @@ bool MainWindow::addImage(const QString& imageFileName)
 
 		//ViewerInterface* const viewer=new ImageViewer(viewertabs);
 		if(viewer->setImageFile(imageFileName)) {
-			idx=viewertabs->addTab(viewer, extractFileName(imageFileName));
+			return viewertabs->addTab(viewer, extractFileName(imageFileName));
 		} else {
-			return false;
+			return -1;
 		}
+	} else {
+		return idx;
 	}
+}
 
+
+void MainWindow::addImagePostProcess(int idx)
+{
 	viewertabs->setCurrentIndex(idx);
 
 	setWindowState(windowState()&~Qt::WindowMinimized);
@@ -154,9 +157,36 @@ bool MainWindow::addImage(const QString& imageFileName)
 	//I don't know whether this actually works
 	setWindowState(windowState()|Qt::WindowActive);
 #endif
+}
 
+
+bool MainWindow::addImage(const QString& imageFileName)
+{
+	const int idx=addImageMain(imageFileName);
+
+	if(idx<0)
+		return false;
+
+	addImagePostProcess(idx);
 	return true;
 }
+
+
+bool MainWindow::addImages(const QStringList& imageFileList)
+{
+	int idx=-1;
+	for(QString imageFileName: imageFileList) {
+		const int newIdx=addImageMain(imageFileName);
+		if(idx<0)
+			idx=newIdx;
+	}
+	if(idx<0)
+		return false;
+	
+	addImagePostProcess(idx);
+	return true;
+}
+
 
 void MainWindow::viewerCloseRequested(ViewerInterface* viewer)
 {
@@ -229,13 +259,12 @@ void MainWindow::closeTab(int idx)
 
 void MainWindow::checkSharedMemory(void)
 {
-	sharedMemory->lock();
-	char* input=reinterpret_cast<char*>(sharedMemory->data());
-	if(input!=nullptr && 0<strlen(input)) {
-		addImage(QString::fromLocal8Bit(input));
-		strcpy(input, "");
+	QStringList fileList=arrayPipe.cut();
+	if(fileList.size()>0)
+	{
+		logger.write(QString::number(fileList.size())+" filepaths in shared memory", LOG_FROM);
+		addImages(fileList);
 	}
-	sharedMemory->unlock();
 }
 
 
