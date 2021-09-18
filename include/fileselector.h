@@ -1,7 +1,6 @@
 #ifndef FILESELECTOR_H_INCLUDED
 #define FILESELECTOR_H_INCLUDED
 
-#include <QObject>
 #include <QString>
 #include <QWidget>
 
@@ -10,6 +9,7 @@
 class FileSelector: public QObject
 {
 		Q_OBJECT
+		
 	public:
 		FileSelector(QWidget* parent=nullptr);
 

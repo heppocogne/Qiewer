@@ -7,6 +7,8 @@
 #include <QResizeEvent>
 #include <QMouseEvent>
 #include <QCloseEvent>
+#include <QDragEnterEvent>
+#include <QDropEvent>
 #include <QEvent>
 #include <QTimer>
 #include <QToolBar>

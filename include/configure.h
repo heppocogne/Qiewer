@@ -4,7 +4,6 @@
 
 #include <QString>
 #include <QWidget>
-#include <QFile>
 
 #include "logger.h"
 
@@ -18,8 +17,8 @@ class Configure
 		bool save(void);
 		void reset(void);
 		
-		void openConfigureDialog(QWidget* dialogParent=nullptr);
-		bool openCloseConfirmDialog(QWidget* dialogParent=nullptr);
+		void openConfigureDialog(void);
+		bool openCloseConfirmDialog(void);
 
 		int windowWidth;
 		int windowHeight;

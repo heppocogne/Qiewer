@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
 	:QMainWindow(parent, Qt::Window),
 	 viewertabs(new QTabWidget(this)),
 	 toolbar(new QToolBar(this)),
-	 fileSelector(new FileSelector(this)),
+	fileSelector(new FileSelector(this)),
 	 cursorTick(new QTimer(this)),
 	 server(new QLocalServer(this))
 {
@@ -84,6 +84,7 @@ MainWindow::MainWindow(QWidget* parent)
 
 MainWindow::~MainWindow()
 {
+	//delete fileSelector;
 	cursorTick->stop();
 }
 
@@ -195,7 +196,6 @@ void MainWindow::reload(void)
 {
 	ViewerInterface* const viewer=currentView();
 	if(viewer) {
-		//viewer->setImageFile(viewer->getFileName());
 		viewer->reload();
 	}
 }
@@ -297,11 +297,7 @@ void MainWindow::changeEvent(QEvent* event)
 {
 	switch(event->type()) {
 		case  QEvent::WindowStateChange:
-			if(windowState()&Qt::WindowMaximized) {
-				configure.maximized=true;
-			} else {
-				configure.maximized=false;
-			}
+			configure.maximized=bool(windowState()&Qt::WindowMaximized);
 			break;
 		default:
 			//ignore
@@ -328,7 +324,7 @@ void MainWindow::dropEvent(QDropEvent *event)
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-	if((!configure.confirmBeforeQuit) || viewertabs->count()<=1 || configure.openCloseConfirmDialog(this)) {
+	if((!configure.confirmBeforeQuit) || viewertabs->count()<=1 || configure.openCloseConfirmDialog()) {
 		event->accept();
 	} else {
 		event->ignore();

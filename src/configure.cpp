@@ -2,6 +2,7 @@
 
 #include <Qt>
 #include <QObject>
+#include <QFile>
 #include <QDialog>
 #include <QLabel>
 #include <QPushButton>
@@ -89,25 +90,22 @@ void Configure::reset(void)
 }
 
 
-void Configure::openConfigureDialog(QWidget* dialogParent)
+void Configure::openConfigureDialog(void)
 {
-	QDialog* configureDialog=new QDialog(dialogParent, (Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint) & ~Qt::WindowContextHelpButtonHint);
+	QDialog* configureDialog=new QDialog(nullptr, (Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint) & ~Qt::WindowContextHelpButtonHint);
 	configureDialog->setWindowTitle("Setting");
 
 	QBoxLayout* const mainLayout=new QVBoxLayout(configureDialog);
 	QCheckBox* const rememberWindowSize=new QCheckBox("Remember last window size", configureDialog);
 
 	//maynLayout->
-
-	if(dialogParent==nullptr) {
-		delete configureDialog;
-	}
+	delete configureDialog;
 }
 
 
-bool Configure::openCloseConfirmDialog(QWidget* dialogParent)
+bool Configure::openCloseConfirmDialog(void)
 {
-	QDialog* confirmDialog=new QDialog(dialogParent, Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+	QDialog* confirmDialog=new QDialog(nullptr, Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
 	confirmDialog->setWindowTitle("Close Confirmation");
 
 	QBoxLayout* const mainLayout=new QVBoxLayout(confirmDialog);
@@ -148,9 +146,7 @@ bool Configure::openCloseConfirmDialog(QWidget* dialogParent)
 
 	configure.confirmBeforeQuit=(checkState==Qt::Unchecked);
 
-	if(dialogParent==nullptr) {
-		delete confirmDialog;
-	}
+	delete confirmDialog;
 
 	return result;
 }

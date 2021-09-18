@@ -2,7 +2,6 @@
 #include <QtGlobal>
 #include <QStringList>
 #include <QString>
-#include <QMessageBox>
 #include <QStandardPaths>
 #include <QLocalSocket>
 #include <QDataStream>
@@ -46,7 +45,7 @@ int main(int argc, char* argv[])
 		configure.load(directoryName+"\\.qiewerconfig");
 
 		logger.write("Qiewer version:	"+(QString)version, LOG_FROM);
-		logger.write("QuickTime version:	"+QString(qVersion()), LOG_FROM);
+		logger.write("Qt version:	"+QString(qVersion()), LOG_FROM);
 
 		QStringList fileList;
 		for(int i=1; i<argc; i++) {
@@ -87,6 +86,7 @@ int main(int argc, char* argv[])
 	} else {
 		exitCode=1;
 	}
+	logger.write("exit code="+QString::number(exitCode), LOG_FROM);
 
 	return exitCode;
 }

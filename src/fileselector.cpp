@@ -4,12 +4,10 @@
 #include <QDir>
 #include <QStandardPaths>
 
-#include <cstring>
 #include "nameutil.h"
 
 FileSelector::FileSelector(QWidget* parent)
-	:QObject(parent)
-{}
+	:QObject(parent){}
 
 void FileSelector::open(void)
 {
@@ -17,7 +15,7 @@ void FileSelector::open(void)
 	if(!(configure.rememberLastDirectory && dir!="" && QDir(dir).exists())) {
 		dir=QStandardPaths::writableLocation(QStandardPaths::PicturesLocation);
 	}
-	const QString selected=QFileDialog::getOpenFileName(static_cast<QWidget*>(parent()),
+	const QString selected=QFileDialog::getOpenFileName(reinterpret_cast<QWidget*>(parent()),
 	                       "Open File",
 	                       dir,
 	                       "Images (*.png *.jpg *.bmp *.gif *.svg)");
@@ -28,10 +26,5 @@ void FileSelector::open(void)
 		if(configure.rememberLastDirectory) {
 			configure.directory=extractDirectoryName(selected);
 		}
-		/*
-		const char* dir_c_str=dir.toStdString().c_str();
-		if(configure.rememberLastDirectory && std::strlen(dir_c_str)<512) {
-			std::strcpy(configure.directory, dir_c_str);
-		}*/
 	}
 }
