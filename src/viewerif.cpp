@@ -10,6 +10,7 @@
 
 double ViewerInterface::virtualScaleMax=10.0;
 double ViewerInterface::virtualScaleMin=0.1;
+double ViewerInterface::zoomManipulationPrecision=1.0;
 
 ViewerInterface::ViewerInterface(QWidget *parent)
 	:QGraphicsView(parent),
@@ -282,7 +283,9 @@ void ViewerInterface::fitSize(void)
 		const auto onPixmap=QPoint(rawSize.width()/2, rawSize.height()/2);
 		const auto onScreen=QPoint(width()/2, height()/2);
 		setVirtualLogScale(0.0);
+		
 		updatePixmapRect();
+		logger.write("scale="+QString::number(getActualScale())+"	("+QString::number(pixmapRect.width())+"x"+QString::number(pixmapRect.height())+")", LOG_FROM);
 
 		positionMapping(onPixmap, onScreen);
 		adjustPosition();
@@ -299,7 +302,9 @@ void ViewerInterface::actualSize(void)
 		const auto onScreen=QPoint(width()/2, height()/2);
 		const auto onPixmap=mapToItem(onScreen);
 		setVirtualScale(1.0/baseScale);
+		
 		updatePixmapRect();
+		logger.write("scale="+QString::number(getActualScale())+"	("+QString::number(pixmapRect.width())+"x"+QString::number(pixmapRect.height())+")", LOG_FROM);
 
 		positionMapping(onPixmap, onScreen);
 		adjustPosition();
@@ -308,25 +313,25 @@ void ViewerInterface::actualSize(void)
 	}
 }
 
-void ViewerInterface::zoom(int value)
+void ViewerInterface::zoom(double value)
 {
 	zoomMain(value, QPoint(width()/2, height()/2));
 }
 
 
-void ViewerInterface::zoomMain(int steps, const QPoint& onScreen)
+void ViewerInterface::zoomMain(double steps, const QPoint& onScreen)
 {
 	viewActualSize=false;
 
 	const double prevLogScale=virtualLogScale;
 	const auto onPixmap=mapToItem(onScreen);
 
-	setVirtualLogScale(virtualLogScale+steps*0.1);
+	setVirtualLogScale(virtualLogScale+steps*0.1/zoomManipulationPrecision);
 
 	//scale changed
 	if(prevLogScale!=virtualLogScale) {
-
 		updatePixmapRect();
+		logger.write("scale="+QString::number(getActualScale())+"	("+QString::number(pixmapRect.width())+"x"+QString::number(pixmapRect.height())+")", LOG_FROM);
 
 		positionMapping(onPixmap, onScreen);
 		adjustPosition();

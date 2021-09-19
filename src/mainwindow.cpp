@@ -216,7 +216,7 @@ void MainWindow::actualSize(void)
 	}
 }
 
-void MainWindow::zoom(int value)
+void MainWindow::zoom(double value)
 {
 	ViewerInterface* const viewer=currentView();
 	if(viewer) {

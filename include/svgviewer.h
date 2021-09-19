@@ -12,14 +12,17 @@
 class SvgViewer: public ViewerInterface
 {
 		Q_OBJECT
-		
+
 		QSvgRenderer* const renderer;
-		
+
 	public:
 		SvgViewer(QWidget* parent=nullptr);
 		virtual ~SvgViewer() {}
 
 	protected:
+		static bool scalingUnlimited;
+		virtual void setVirtualScale(double v_scale);
+		virtual void setVirtualLogScale(double v_scale);
 		virtual bool load(const QString& srcImageFile);
 		virtual void paintEvent(QPaintEvent *event);
 };

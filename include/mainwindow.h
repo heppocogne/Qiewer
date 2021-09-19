@@ -51,7 +51,7 @@ public:
 		void reload(void);
 		void fitSize(void);
 		void actualSize(void);
-		void zoom(int value);
+		void zoom(double value);
 		//void setting(void);
 		void processConnection(void);
 

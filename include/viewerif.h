@@ -39,14 +39,15 @@ class ViewerInterface: public QGraphicsView
 		QPoint mousePos;
 		static double virtualScaleMax;
 		static double virtualScaleMin;
+		static double zoomManipulationPrecision;
 		
 		double baseScale;	//image scale to fit to draw area (not affect coordinate system)
 		double virtualLogScale;	//relative scale to draw area (〃)
 
 		void updateBaseScale(void);
 		double getVirtualScale(void)const;
-		void setVirtualScale(double v_scale);
-		void setVirtualLogScale(double v_scale);
+		virtual void setVirtualScale(double v_scale);
+		virtual void setVirtualLogScale(double v_scale);
 		double getActualScale(void)const;
 
 		bool viewActualSize;
@@ -62,7 +63,7 @@ class ViewerInterface: public QGraphicsView
 		//move the pixmap so that match 'pixmapPos' to 'screenPos'
 		void positionMapping(const QPointF& pixmapPos, const QPointF& screenPos);
 		void adjustPosition(void);
-		void zoomMain(int steps, const QPoint& onScreen);
+		void zoomMain(double steps, const QPoint& onScreen);
 
 		void unknownFormatErrorDialog(void);
 
@@ -84,7 +85,7 @@ class ViewerInterface: public QGraphicsView
 		bool setImageFile(const QString& srcImageFile);
 		void fitSize(void);	//fit to screen; virtualScale=1
 		void actualSize(void);	//view original size; actualScale=1
-		void zoom(int value);
+		void zoom(double value);
 		bool reload(void);
 
 	signals:

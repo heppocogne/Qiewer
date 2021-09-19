@@ -3,6 +3,10 @@
 #include <QImageReader>
 #include <QPainter>
 
+
+bool ImageViewer::antialiasing=true;
+
+
 ImageViewer::ImageViewer(QWidget *parent)
 	:ViewerInterface(parent)
 {
@@ -31,7 +35,7 @@ void ImageViewer::paintEvent(QPaintEvent *event)
 	if(event==nullptr) {}	//warning avoidance
 
 	QPainter painter(viewport());
-	painter.setRenderHint(QPainter::SmoothPixmapTransform,true);
+	painter.setRenderHint(QPainter::Antialiasing, antialiasing);
 
 	painter.drawPixmap(pixmapRect, rawPixmap);
 }
