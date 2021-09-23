@@ -21,7 +21,7 @@
 
 Logger logger;
 Configure configure;
-const Version version(0, 3, 6, "alpha");
+const Version version(0, 3, 7, "alpha");
 
 
 int main(int argc, char* argv[])

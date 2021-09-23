@@ -1,6 +1,6 @@
 QT += core gui widgets svg network
 TARGET = Qiewer
-VERSION = 0.3.6
+VERSION = 0.3.7
 TEMPLATE = app
 
 INCLUDEPATH += $$PWD/include

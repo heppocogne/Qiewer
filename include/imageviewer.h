@@ -21,7 +21,6 @@ class ImageViewer: public ViewerInterface
 	protected:
 		virtual bool load(const QString& srcImageFile);
 		virtual void paintEvent(QPaintEvent *event);
-		static bool antialiasing;
 };
 
 #endif

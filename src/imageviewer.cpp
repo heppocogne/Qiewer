@@ -3,8 +3,7 @@
 #include <QImageReader>
 #include <QPainter>
 
-
-bool ImageViewer::antialiasing=true;
+#include "configure.h"
 
 
 ImageViewer::ImageViewer(QWidget *parent)
@@ -35,7 +34,7 @@ void ImageViewer::paintEvent(QPaintEvent *event)
 	if(event==nullptr) {}	//warning avoidance
 
 	QPainter painter(viewport());
-	painter.setRenderHint(QPainter::Antialiasing, antialiasing);
+	painter.setRenderHint(QPainter::Antialiasing, configure.raster_antialiasing);
 
 	painter.drawPixmap(pixmapRect, rawPixmap);
 }

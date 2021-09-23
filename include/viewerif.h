@@ -37,9 +37,6 @@ class ViewerInterface: public QGraphicsView
 		//static Qt::TransformationMode transformationMode;
 		bool leftClick;
 		QPoint mousePos;
-		static double virtualScaleMax;
-		static double virtualScaleMin;
-		static double zoomManipulationPrecision;
 		
 		double baseScale;	//image scale to fit to draw area (not affect coordinate system)
 		double virtualLogScale;	//relative scale to draw area (〃)

@@ -20,7 +20,6 @@ class SvgViewer: public ViewerInterface
 		virtual ~SvgViewer() {}
 
 	protected:
-		static bool scalingUnlimited;
 		virtual void setVirtualScale(double v_scale);
 		virtual void setVirtualLogScale(double v_scale);
 		virtual bool load(const QString& srcImageFile);

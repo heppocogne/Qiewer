@@ -20,6 +20,7 @@ class Configure
 		void openConfigureDialog(void);
 		bool openCloseConfirmDialog(void);
 
+
 		int windowWidth;
 		int windowHeight;
 		bool maximized;
@@ -27,6 +28,11 @@ class Configure
 		bool rememberLastDirectory;
 		bool allowDuplicatedFiles;
 		bool confirmBeforeQuit;
+		double virtualScaleMax;
+		double virtualScaleMin;
+		double zoomManipulationPrecision;
+		bool raster_antialiasing;
+		bool svg_scalingUnlimited;
 };
 extern Configure configure;
 

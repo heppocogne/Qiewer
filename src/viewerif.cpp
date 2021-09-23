@@ -5,12 +5,9 @@
 #include <QCursor>
 
 #include "logger.h"
+#include "configure.h"
 #include <cmath>
 
-
-double ViewerInterface::virtualScaleMax=10.0;
-double ViewerInterface::virtualScaleMin=0.1;
-double ViewerInterface::zoomManipulationPrecision=1.0;
 
 ViewerInterface::ViewerInterface(QWidget *parent)
 	:QGraphicsView(parent),
@@ -104,18 +101,18 @@ double ViewerInterface::getVirtualScale(void)const
 
 void ViewerInterface::setVirtualScale(double v_scale)
 {
-	if(1.0<baseScale*v_scale && virtualScaleMax<v_scale) {
-		v_scale=virtualScaleMax;
-	} else if(v_scale<virtualScaleMin) {
-		v_scale=virtualScaleMin;
+	if(1.0<baseScale*v_scale && configure.virtualScaleMax<v_scale) {
+		v_scale=configure.virtualScaleMax;
+	} else if(v_scale<configure.virtualScaleMin) {
+		v_scale=configure.virtualScaleMin;
 	}
 	virtualLogScale=std::log10(v_scale);
 }
 
 void ViewerInterface::setVirtualLogScale(double vlog_scale)
 {
-	const double vlog_max=std::log10(virtualScaleMax);
-	const double vlog_min=std::log10(virtualScaleMin);
+	const double vlog_max=std::log10(configure.virtualScaleMax);
+	const double vlog_min=std::log10(configure.virtualScaleMin);
 	if(1.0<baseScale*std::pow(10, vlog_scale) && vlog_max<vlog_scale) {
 		vlog_scale=vlog_max;
 	} else if(vlog_scale<vlog_min) {
@@ -326,7 +323,7 @@ void ViewerInterface::zoomMain(double steps, const QPoint& onScreen)
 	const double prevLogScale=virtualLogScale;
 	const auto onPixmap=mapToItem(onScreen);
 
-	setVirtualLogScale(virtualLogScale+steps*0.1/zoomManipulationPrecision);
+	setVirtualLogScale(virtualLogScale+steps*0.1/configure.zoomManipulationPrecision);
 
 	//scale changed
 	if(prevLogScale!=virtualLogScale) {

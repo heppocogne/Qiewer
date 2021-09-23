@@ -16,7 +16,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 
-const Configure defaultValues;
+//const Configure defaultValues;
 
 
 Configure::Configure()
@@ -26,13 +26,19 @@ Configure::Configure()
 	 directory(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)),
 	 rememberLastDirectory(true),
 	 allowDuplicatedFiles(false),
-	 confirmBeforeQuit(true)
+	 confirmBeforeQuit(true),
+	 virtualScaleMax(10.0),
+	 virtualScaleMin(0.1),
+	 zoomManipulationPrecision(1.0),
+	 raster_antialiasing(true),
+	 svg_scalingUnlimited(false)
 {
 
 }
 
 bool Configure::load(const QString& _configureFileName)
 {
+	reset();
 	this->configureFileName=_configureFileName;
 	QFile configureFile(configureFileName);
 	if(configureFile.open(QFile::ReadOnly | QFile::Text)) {
@@ -49,6 +55,11 @@ bool Configure::load(const QString& _configureFileName)
 		obj_Read(rememberLastDirectory).toBool();
 		obj_Read(allowDuplicatedFiles).toBool();
 		obj_Read(confirmBeforeQuit).toBool();
+		obj_Read(virtualScaleMax).toDouble();
+		obj_Read(virtualScaleMin).toDouble();
+		obj_Read(zoomManipulationPrecision).toDouble();
+		obj_Read(raster_antialiasing).toBool();
+		obj_Read(svg_scalingUnlimited).toBool();
 #undef obj_Read
 		configureFile.close();
 		return true;
@@ -73,6 +84,11 @@ bool Configure::save(void)
 		obj_Write(rememberLastDirectory);
 		obj_Write(allowDuplicatedFiles);
 		obj_Write(confirmBeforeQuit);
+		obj_Write(virtualScaleMax);
+		obj_Write(virtualScaleMin);
+		obj_Write(zoomManipulationPrecision);
+		obj_Write(raster_antialiasing);
+		obj_Write(svg_scalingUnlimited);
 #undef obj_Write
 		QJsonDocument doc=QJsonDocument(obj);
 		ofs<<doc.toJson();
@@ -111,7 +127,7 @@ bool Configure::openCloseConfirmDialog(void)
 	QBoxLayout* const mainLayout=new QVBoxLayout(confirmDialog);
 	mainLayout->setContentsMargins(80, 40, 80, 40);
 	QBoxLayout* const subLayout=new QHBoxLayout(confirmDialog);
-	
+
 	QLabel* const questionMessage=new QLabel("Exit?", confirmDialog);
 	QPushButton* const yesButton=new QPushButton("Yes", confirmDialog);
 	QPushButton* const noButton=new QPushButton("No", confirmDialog);
