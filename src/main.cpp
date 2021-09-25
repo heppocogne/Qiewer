@@ -7,6 +7,7 @@
 #include <QDataStream>
 #include <QByteArray>
 #include <QIODevice>
+//#include <QCoreApplication>
 
 #include "version.h"
 #include "mainwindow.h"
@@ -21,7 +22,7 @@
 
 Logger logger;
 Configure configure;
-const Version version(0, 3, 7, "alpha");
+const Version version(0, 4, 0, "beta");
 
 
 int main(int argc, char* argv[])
@@ -29,6 +30,7 @@ int main(int argc, char* argv[])
 	if(argc<=1) {
 		return 0;
 	}
+	
 	QApplication app(argc, argv);
 
 	int exitCode=1;
@@ -62,6 +64,7 @@ int main(int argc, char* argv[])
 		}
 		configure.save();
 		delete window;
+		logger.write("exit code="+QString::number(exitCode), LOG_FROM);
 
 	} else if(qiewerMutex.getState()==WinMutex::State::AlreadyExists) {	//there's already Qiewer process
 		//wait for the window visible
@@ -86,7 +89,6 @@ int main(int argc, char* argv[])
 	} else {
 		exitCode=1;
 	}
-	logger.write("exit code="+QString::number(exitCode), LOG_FROM);
 
 	return exitCode;
 }

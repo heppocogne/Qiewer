@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget* parent)
 	:QMainWindow(parent, Qt::Window),
 	 viewertabs(new QTabWidget(this)),
 	 toolbar(new QToolBar(this)),
-	fileSelector(new FileSelector(this)),
+	 fileSelector(new FileSelector(this)),
 	 cursorTick(new QTimer(this)),
 	 server(new QLocalServer(this))
 {
@@ -52,7 +52,6 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(fileSelector, &FileSelector::fileSelected, this, &MainWindow::addImage);
 
 	//setup reload icon
-	//setup setting icon
 
 	//setup zoomin icon
 	toolbar->addSeparator();
@@ -67,10 +66,15 @@ MainWindow::MainWindow(QWidget* parent)
 	//setup fit size icon
 	toolbar->addAction(QIcon(":/rc/fit24.png"), "Fit to Window", this, &MainWindow::fitSize);
 
+	//setup setting icon
+	toolbar->addSeparator();
+	toolbar->addAction(QIcon(":/rc/gear24.png"), "Setting", [&] {configure.openConfigureDialog();});
+
 
 	//setup server
 	server->listen(serverName);
 	connect(server, &QLocalServer::newConnection, this, &MainWindow::processConnection);
+
 
 	//connect signals
 	connect(viewertabs, &QTabWidget::tabCloseRequested, this, &MainWindow::closeTab);
@@ -288,8 +292,10 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 	toolbarGeometry.setRight(event->size().width());
 	toolbar->setGeometry(toolbarGeometry);
 
-	configure.windowWidth=event->size().width();
-	configure.windowHeight=event->size().height();
+	if(configure.windowSizeMode==Configure::REMEMBER_SIZE) {
+		configure.windowWidth=event->size().width();
+		configure.windowHeight=event->size().height();
+	}
 }
 
 

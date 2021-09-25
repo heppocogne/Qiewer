@@ -6,5 +6,6 @@
 		<file>fit24.png</file>
 		<file>zoomin24.png</file>
 		<file>zoomout24.png</file>
+		<file>gear24.png</file>
 	</qresource>
 </RCC>

@@ -1,37 +1,41 @@
 #include "configure.h"
 
 #include <Qt>
-#include <QObject>
 #include <QFile>
+#include <QObject>
 #include <QDialog>
-#include <QLabel>
-#include <QPushButton>
-#include <QCheckBox>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
 #include <QTextStream>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonValue>
 #include <QStandardPaths>
-#include <QMessageBox>
+#include <QScreen>
+#include <QGuiApplication>
+#include "ui_close_confirmation.h"
+#include "ui_configure.h"
 
-//const Configure defaultValues;
+
+template<typename... types>
+void Configure::connect(types... args)
+{
+	QObject::connect(args...);
+}
 
 
 Configure::Configure()
 	:windowWidth(1600),
 	 windowHeight(900),
 	 maximized(false),
+	 windowSizeMode(REMEMBER_SIZE),
 	 directory(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation)),
 	 rememberLastDirectory(true),
-	 allowDuplicatedFiles(false),
-	 confirmBeforeQuit(true),
 	 virtualScaleMax(10.0),
 	 virtualScaleMin(0.1),
 	 zoomManipulationPrecision(1.0),
 	 raster_antialiasing(true),
-	 svg_scalingUnlimited(false)
+	 svg_scalingUnlimited(false),
+	 allowDuplicatedFiles(false),
+	 confirmBeforeQuit(true)
 {
 
 }
@@ -51,6 +55,7 @@ bool Configure::load(const QString& _configureFileName)
 		obj_Read(windowWidth).toInt();
 		obj_Read(windowHeight).toInt();
 		obj_Read(maximized).toBool();
+		obj_Read(windowSizeMode).toInt();
 		obj_Read(directory).toString();
 		obj_Read(rememberLastDirectory).toBool();
 		obj_Read(allowDuplicatedFiles).toBool();
@@ -69,7 +74,7 @@ bool Configure::load(const QString& _configureFileName)
 }
 
 
-bool Configure::save(void)
+bool Configure::save(void)const
 {
 	QFile configureFile(configureFileName);
 	if(configureFile.open(QFile::WriteOnly | QFile::Text | QFile::Truncate)) {
@@ -80,6 +85,7 @@ bool Configure::save(void)
 		obj_Write(windowWidth);
 		obj_Write(windowHeight);
 		obj_Write(maximized);
+		obj_Write(windowSizeMode);
 		obj_Write(directory);
 		obj_Write(rememberLastDirectory);
 		obj_Write(allowDuplicatedFiles);
@@ -108,61 +114,48 @@ void Configure::reset(void)
 
 void Configure::openConfigureDialog(void)
 {
-	QDialog* configureDialog=new QDialog(nullptr, (Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint) & ~Qt::WindowContextHelpButtonHint);
-	configureDialog->setWindowTitle("Setting");
+	QDialog* const configureDialog=new QDialog(nullptr, Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+	Ui::ConfigureDialog ui;
+	ui.setupUi(configureDialog);
 
-	QBoxLayout* const mainLayout=new QVBoxLayout(configureDialog);
-	QCheckBox* const rememberWindowSize=new QCheckBox("Remember last window size", configureDialog);
+	Configure backup=*this;
 
-	//maynLayout->
+	ui.
+
+
+	configureDialog->setFixedSize(configureDialog->size());
+	configureDialog->exec();
+
+
 	delete configureDialog;
 }
 
 
 bool Configure::openCloseConfirmDialog(void)
 {
-	QDialog* confirmDialog=new QDialog(nullptr, Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
-	confirmDialog->setWindowTitle("Close Confirmation");
-
-	QBoxLayout* const mainLayout=new QVBoxLayout(confirmDialog);
-	mainLayout->setContentsMargins(80, 40, 80, 40);
-	QBoxLayout* const subLayout=new QHBoxLayout(confirmDialog);
-
-	QLabel* const questionMessage=new QLabel("Exit?", confirmDialog);
-	QPushButton* const yesButton=new QPushButton("Yes", confirmDialog);
-	QPushButton* const noButton=new QPushButton("No", confirmDialog);
-	QCheckBox* const neverAskAgain=new QCheckBox("Don't ask me again", confirmDialog);
-
-	subLayout->addWidget(yesButton);
-	subLayout->addWidget(noButton);
-	mainLayout->addWidget(questionMessage, 0, Qt::AlignHCenter);
-	mainLayout->addLayout(subLayout);
-	mainLayout->addWidget(neverAskAgain, 0, Qt::AlignHCenter);
-
-	confirmDialog->setLayout(mainLayout);
-	confirmDialog->setFixedSize(confirmDialog->sizeHint());
+	QDialog* const confirmDialog=new QDialog(nullptr, Qt::WindowTitleHint | Qt::WindowCloseButtonHint);
+	Ui::ConfirmDialog ui;
+	ui.setupUi(confirmDialog);
 
 	bool result=false;
 	int checkState=configure.confirmBeforeQuit ? Qt::Unchecked : Qt::Checked;
-	neverAskAgain->setCheckState(static_cast<Qt::CheckState>(checkState));
+	ui.neverAskAgain->setCheckState(static_cast<Qt::CheckState>(checkState));
 
-	QObject::connect(yesButton, &QPushButton::clicked, [&] {
-		result=true;
-		confirmDialog->close();
-	});
-	QObject::connect(noButton, &QPushButton::clicked, [&] {
-		result=false;
-		confirmDialog->close();
-	});
-	QObject::connect(neverAskAgain, &QCheckBox::stateChanged, [&](int state) {
+	connect(ui.okButton, &QPushButton::clicked, [&] {result=true;});
+	connect(ui.cancelButton, &QPushButton::clicked, [&] {result=false;});
+	connect(ui.neverAskAgain, &QCheckBox::stateChanged, [&](int state) {
 		checkState=state;
 	});
 
+	confirmDialog->setFixedSize(confirmDialog->size());
+
+	const Configure backup=*this;
 	confirmDialog->exec();
 
 	configure.confirmBeforeQuit=(checkState==Qt::Unchecked);
+	if(!result)
+		*this=backup;
 
 	delete confirmDialog;
-
 	return result;
 }
