@@ -10,7 +10,9 @@
 #include <QJsonValue>
 #include <QStandardPaths>
 #include <QScreen>
+#include <QSize>
 #include <QGuiApplication>
+#include <QFileDialog>
 #include "ui_close_confirmation.h"
 #include "ui_configure.h"
 
@@ -118,9 +120,89 @@ void Configure::openConfigureDialog(void)
 	Ui::ConfigureDialog ui;
 	ui.setupUi(configureDialog);
 
-	Configure backup=*this;
+	Configure this_copy=*this;
 
-	ui.
+	//window size
+	const auto& available=QGuiApplication::primaryScreen()->availableSize();
+	ui.widthEdit->setMaximum(available.width());
+	ui.heightEdit->setMaximum(available.height());
+	connect(ui.rememberSize, 		&QRadioButton::clicked, [&] {this_copy.windowSizeMode=REMEMBER_SIZE;});
+	connect(ui.alwaysMaximized, 	&QRadioButton::clicked, [&] {this_copy.windowSizeMode=ALWAYS_MAXIMIZED;});
+	connect(ui.useDefaultSize, 		&QRadioButton::clicked, [&] {this_copy.windowSizeMode=USE_DEFALUT_SIZE;});
+	connect(ui.widthEdit,	QOverload<int>::of(&QSpinBox::valueChanged), [&](int value) {
+		this_copy.windowWidth=value;
+	});
+	connect(ui.heightEdit,	QOverload<int>::of(&QSpinBox::valueChanged), [&](int value) {
+		this_copy.windowHeight=value;
+	});
+	ui.widthEdit->setValue(windowWidth);
+	ui.heightEdit->setValue(windowHeight);
+	switch(windowSizeMode) {
+		case REMEMBER_SIZE:
+			ui.rememberSize->setChecked(true);
+			break;
+		case ALWAYS_MAXIMIZED:
+			ui.alwaysMaximized->setChecked(true);
+			break;
+		case USE_DEFALUT_SIZE:
+			ui.useDefaultSize->setChecked(true);
+			break;
+	}
+
+	//file selector
+	connect(ui.rememberDirectory,	QRadioButton::clicked, [&] {this_copy.rememberLastDirectory=true;});
+	connect(ui.useDefaultDirectory,	QRadioButton::clicked, [&] {this_copy.rememberLastDirectory=false;});
+	connect(ui.directoryPathEdit, &QLineEdit::textEdited, [&](const QString& text) {
+		this_copy.directory=text;
+	});
+	connect(ui.browseButton, &QPushButton::clicked, [&] {
+		const QString& selected=QFileDialog::getExistingDirectory(configureDialog, "Select default directory", this_copy.directory);
+		ui.directoryPathEdit->setText(selected);
+	});
+	if(rememberLastDirectory)
+		ui.rememberDirectory->setChecked(true);
+	else
+		ui.useDefaultDirectory->setChecked(true);
+	ui.directoryPathEdit->setText(directory);
+
+	//zoom manipulation
+	connect(ui.minEdit, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double value) {
+		this_copy.virtualScaleMin=value;
+	});
+	connect(ui.maxEdit, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double value) {
+		this_copy.virtualScaleMax=value;
+	});
+	connect(ui.precisionEdit, QOverload<double>::of(&QDoubleSpinBox::valueChanged), [&](double value) {
+		this_copy.zoomManipulationPrecision=value;
+	});
+	connect(ui.enableAntialiasing, &QCheckBox::toggled, [&](bool value) {
+		this_copy.raster_antialiasing=value;
+	});
+	connect(ui.unlimitSvgScaling, &QCheckBox::toggled, [&](bool value) {
+		this_copy.svg_scalingUnlimited=value;
+	});
+	ui.minEdit->setValue(virtualScaleMin);
+	ui.maxEdit->setValue(virtualScaleMax);
+	ui.precisionEdit->setValue(zoomManipulationPrecision);
+	ui.enableAntialiasing->setChecked(raster_antialiasing);
+	ui.unlimitSvgScaling->setChecked(svg_scalingUnlimited);
+
+	//other
+	connect(ui.closeConfirmation, &QCheckBox::toggled, [&](bool value) {
+		this_copy.confirmBeforeQuit=value;
+	});
+	connect(ui.duplicatedImages, &QCheckBox::toggled, [&](bool value) {
+		this_copy.allowDuplicatedFiles=value;
+	});
+	ui.closeConfirmation->setChecked(confirmBeforeQuit);
+	ui.duplicatedImages->setChecked(allowDuplicatedFiles);
+
+	//buttons
+	const auto& commitChange=[&] {
+		*this=this_copy;
+	};
+	connect(ui.doneButton, &QPushButton::clicked, commitChange);
+	connect(ui.applyButton, &QPushButton::clicked, commitChange);
 
 
 	configureDialog->setFixedSize(configureDialog->size());
@@ -147,14 +229,14 @@ bool Configure::openCloseConfirmDialog(void)
 		checkState=state;
 	});
 
+	Configure this_copy=*this;
 	confirmDialog->setFixedSize(confirmDialog->size());
 
-	const Configure backup=*this;
 	confirmDialog->exec();
 
-	configure.confirmBeforeQuit=(checkState==Qt::Unchecked);
-	if(!result)
-		*this=backup;
+	this_copy.confirmBeforeQuit=(checkState==Qt::Unchecked);
+	if(result)
+		*this=this_copy;
 
 	delete confirmDialog;
 	return result;

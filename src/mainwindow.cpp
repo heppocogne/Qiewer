@@ -231,8 +231,9 @@ void MainWindow::zoom(double value)
 
 void MainWindow::showProperly(void)
 {
-	if(configure.maximized) {
+	if(configure.windowSizeMode==Configure::ALWAYS_MAXIMIZED || (configure.windowSizeMode==Configure::REMEMBER_SIZE && configure.maximized)) {
 		logger.write("show maximized window", LOG_FROM);
+		configure.maximized=true;
 		showMaximized();
 	} else {
 		logger.write("show normal window:	"+QString::number(configure.windowWidth)+"x"+QString::number(configure.windowHeight), LOG_FROM);
@@ -240,6 +241,7 @@ void MainWindow::showProperly(void)
 		const auto& available=QGuiApplication::primaryScreen()->availableSize();
 		setGeometry((available.width()-configure.windowWidth)/2, (available.height()-configure.windowHeight)/2,
 		            configure.windowWidth, configure.windowHeight);
+		configure.maximized=false;
 		show();
 	}
 }

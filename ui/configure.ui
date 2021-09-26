@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ui version="4.0">
+<ui version="4.0" connectslotsbyname="false">
  <class>ConfigureDialog</class>
  <widget class="QDialog" name="ConfigureDialog">
   <property name="geometry">
@@ -98,7 +98,7 @@
           <item>
            <widget class="QRadioButton" name="rememberSize">
             <property name="text">
-             <string>Remember the last window size</string>
+             <string>Remember last window size</string>
             </property>
            </widget>
           </item>
@@ -230,7 +230,7 @@
           <item>
            <widget class="QRadioButton" name="rememberDirectory">
             <property name="text">
-             <string>Remember the last directory</string>
+             <string>Remember last directory</string>
             </property>
            </widget>
           </item>
@@ -361,7 +361,7 @@
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="label">
+             <widget class="QLabel" name="precisionLabel">
               <property name="text">
                <string>Zoom manipulation precision</string>
               </property>
@@ -417,7 +417,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QCheckBox" name="dupulicatedImages">
+       <widget class="QCheckBox" name="duplicatedImages">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
           <horstretch>0</horstretch>
@@ -505,6 +505,166 @@
     <hint type="destinationlabel">
      <x>199</x>
      <y>299</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberSize</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>heightEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>alwaysMaximized</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>heightEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberSize</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widthEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>70</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>178</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>alwaysMaximized</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widthEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>101</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>178</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useDefaultSize</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>heightEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>371</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useDefaultSize</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>widthEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>226</x>
+     <y>132</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>178</x>
+     <y>167</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberDirectory</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>directoryPathEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>225</x>
+     <y>245</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>rememberDirectory</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>browseButton</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>225</x>
+     <y>245</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>362</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useDefaultDirectory</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>directoryPathEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>225</x>
+     <y>276</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>189</x>
+     <y>314</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>useDefaultDirectory</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>browseButton</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>225</x>
+     <y>276</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>362</x>
+     <y>314</y>
     </hint>
    </hints>
   </connection>
