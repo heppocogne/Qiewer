@@ -27,10 +27,10 @@ class MainWindow: public QMainWindow
 		QToolBar* const toolbar;
 		
 		FileSelector* const fileSelector;
-
 		QTimer* const cursorTick;
-		
 		QLocalServer* const server;
+		
+		bool maximized;
 		
 		ViewerInterface* currentView(void)const;
 		int addImageMain(const QString& imageFileName);
@@ -52,7 +52,6 @@ public:
 		void fitSize(void);
 		void actualSize(void);
 		void zoom(double value);
-		//void setting(void);
 		void processConnection(void);
 
 	protected:

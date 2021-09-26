@@ -81,14 +81,13 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(cursorTick, &QTimer::timeout, this, &MainWindow::checkMousePosition);
 
 
-	//check mouse position every 0.025s
-	cursorTick->start(std::chrono::milliseconds(25));
+	//check mouse position every 0.05s
+	cursorTick->start(std::chrono::milliseconds(50));
 }
 
 
 MainWindow::~MainWindow()
 {
-	//delete fileSelector;
 	cursorTick->stop();
 }
 
@@ -126,7 +125,6 @@ int MainWindow::addImageMain(const QString& imageFileName)
 			viewer=new ImageViewer(viewertabs);
 		}
 
-		//ViewerInterface* const viewer=new ImageViewer(viewertabs);
 		if(viewer->setImageFile(imageFileName)) {
 			connect(viewer, &ViewerInterface::closeMe, this, &MainWindow::viewerCloseRequested);
 			return viewertabs->addTab(viewer, extractFileName(imageFileName));
@@ -147,7 +145,7 @@ void MainWindow::addImagePostProcess(int idx)
 	viewertabs->setCurrentIndex(idx);
 
 	setWindowState(windowState()&~Qt::WindowMinimized);
-	if(configure.maximized) {
+	if(maximized) {
 		setWindowState(windowState()&Qt::WindowMaximized);
 	}
 
@@ -233,7 +231,7 @@ void MainWindow::showProperly(void)
 {
 	if(configure.windowSizeMode==Configure::ALWAYS_MAXIMIZED || (configure.windowSizeMode==Configure::REMEMBER_SIZE && configure.maximized)) {
 		logger.write("show maximized window", LOG_FROM);
-		configure.maximized=true;
+		maximized=true;
 		showMaximized();
 	} else {
 		logger.write("show normal window:	"+QString::number(configure.windowWidth)+"x"+QString::number(configure.windowHeight), LOG_FROM);
@@ -241,7 +239,7 @@ void MainWindow::showProperly(void)
 		const auto& available=QGuiApplication::primaryScreen()->availableSize();
 		setGeometry((available.width()-configure.windowWidth)/2, (available.height()-configure.windowHeight)/2,
 		            configure.windowWidth, configure.windowHeight);
-		configure.maximized=false;
+		maximized=false;
 		show();
 	}
 }
@@ -293,11 +291,6 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 	toolbarGeometry.setLeft(0);
 	toolbarGeometry.setRight(event->size().width());
 	toolbar->setGeometry(toolbarGeometry);
-
-	if(configure.windowSizeMode==Configure::REMEMBER_SIZE) {
-		configure.windowWidth=event->size().width();
-		configure.windowHeight=event->size().height();
-	}
 }
 
 
@@ -305,7 +298,7 @@ void MainWindow::changeEvent(QEvent* event)
 {
 	switch(event->type()) {
 		case  QEvent::WindowStateChange:
-			configure.maximized=bool(windowState()&Qt::WindowMaximized);
+			maximized=bool(windowState()&Qt::WindowMaximized);
 			break;
 		default:
 			//ignore
@@ -333,6 +326,13 @@ void MainWindow::dropEvent(QDropEvent *event)
 void MainWindow::closeEvent(QCloseEvent *event)
 {
 	if((!configure.confirmBeforeQuit) || viewertabs->count()<=1 || configure.openCloseConfirmDialog()) {
+		if(configure.windowSizeMode==Configure::REMEMBER_SIZE) {
+			configure.windowWidth=width();
+			configure.windowHeight=height();
+			if(windowState()&Qt::WindowMaximized){
+				configure.maximized=bool(windowState()&Qt::WindowMaximized);
+			}
+		}
 		event->accept();
 	} else {
 		event->ignore();
